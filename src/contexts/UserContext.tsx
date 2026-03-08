@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+import { createContext, useContext, useEffect, useState } from "react";
 
 type User = {
   id: number;
@@ -31,6 +32,16 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
     localStorage.removeItem("token");
   }
+
+  useEffect(() => {
+    const existingToken = localStorage.getItem("token");
+
+    if (existingToken) {
+      setToken(existingToken);
+    } else {
+      logout()
+    }
+  }, [])
 
   return (
     <UserContext.Provider value={{ user, token, setAuth, logout }}>

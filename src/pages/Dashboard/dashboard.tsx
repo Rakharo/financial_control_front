@@ -1,14 +1,62 @@
-import { Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import { useSummary } from "../../hooks/useSummary";
 
 export default function Dashboard() {
-    const navigate = useNavigate();
+  const { data, isLoading } = useSummary();
+
+  if (isLoading) {
+    return <div>Carregando...</div>;
+  }
+
   return (
     <Box>
-      <span>Dashboard</span>
-      <Button variant="contained" onClick={() => navigate("/")}>
-        Voltar
-      </Button>
+      <Typography variant="h4" mb={3}>
+        Dashboard
+      </Typography>
+
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 4}}>
+          <Card>
+            <CardContent>
+              <Typography color="text.secondary">
+                Saldo atual
+              </Typography>
+
+              <Typography variant="h5">
+                R$ {data?.balance.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 4}}>
+          <Card>
+            <CardContent>
+              <Typography color="text.secondary">
+                Receitas
+              </Typography>
+
+              <Typography variant="h5" color="success.main">
+                R$ {data?.total_income.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 4}}>
+          <Card>
+            <CardContent>
+              <Typography color="text.secondary">
+                Despesas
+              </Typography>
+
+              <Typography variant="h5" color="error.main">
+                R$ {data?.total_expense.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
