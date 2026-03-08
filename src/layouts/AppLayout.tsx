@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
+import TopBar from "./TopBar";
 
 export default function AppLayout() {
   return (
@@ -8,9 +9,14 @@ export default function AppLayout() {
         minHeight: "100dvh",
         padding: 3,
         backgroundColor: "#f5f5f5",
+        flexGrow: 1,
       }}
     >
-      <Outlet />
+      <TopBar />
+
+      <Box sx={{ padding: 3 }}>
+        <Outlet />
+      </Box>
     </Box>
   );
 }

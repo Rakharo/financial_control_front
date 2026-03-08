@@ -1,25 +1,21 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { createContext, useContext, useEffect, useState } from "react";
-
-type User = {
-  id: number;
-  login: string;
-};
+import type { iUserResponse } from "../interfaces/UserInterface";
 
 type UserContextType = {
-  user: User | null;
+  user: iUserResponse | null;
   token: string | null;
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
+  setAuth: (user: iUserResponse, accessToken: string, refreshToken: string) => void;
   logout: () => void;
 };
 
 const UserContext = createContext<UserContextType | null>(null);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<iUserResponse | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  function setAuth(user: User, accessToken: string, refreshToken: string) {
+  function setAuth(user: iUserResponse, accessToken: string, refreshToken: string) {
     setUser(user);
 
     localStorage.setItem("accessToken", accessToken);
