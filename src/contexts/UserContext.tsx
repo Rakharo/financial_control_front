@@ -1,0 +1,51 @@
+import { createContext, useContext, useState } from "react";
+
+type User = {
+  id: number;
+  login: string;
+};
+
+type UserContextType = {
+  user: User | null;
+  token: string | null;
+  setAuth: (user: User, token: string) => void;
+  logout: () => void;
+};
+
+const UserContext = createContext<UserContextType | null>(null);
+
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  function setAuth(user: User, token: string) {
+    setUser(user);
+    setToken(token);
+
+    localStorage.setItem("token", token);
+  }
+
+  function logout() {
+    setUser(null);
+    setToken(null);
+
+    localStorage.removeItem("token");
+  }
+
+  return (
+    <UserContext.Provider value={{ user, token, setAuth, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+export function useUser() {
+  const context = useContext(UserContext);
+
+  if (!context) {
+    throw new Error("useUser must be used inside UserProvider");
+  }
+
+  return context;
+}

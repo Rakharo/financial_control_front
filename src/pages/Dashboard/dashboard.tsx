@@ -6,7 +6,7 @@ export default function Dashboard() {
   return (
     <Box>
       <span>Dashboard</span>
-      <Button variant="contained" onClick={() => navigate("/login")}>
+      <Button variant="contained" onClick={() => navigate("/")}>
         Voltar
       </Button>
     </Box>
