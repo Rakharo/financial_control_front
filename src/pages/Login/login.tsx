@@ -48,36 +48,41 @@ export default function Login() {
         backgroundColor: "#f5f5f5",
       }}
     >
-      <Card sx={{ width: "100%", maxWidth: 400 }}>
-        <CardContent sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          <Typography variant="h5" textAlign="center">
-            Login
-          </Typography>
-
-          <TextField
-            label="Usuário"
-            {...register("login")}
-            error={!!errors.login}
-            helperText={errors.login?.message}
-          />
-
-          <TextField
-            label="Senha"
-            type="password"
-            {...register("password")}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-          />
-
-          <Button
-            variant="contained"
-            onClick={handleSubmit(onSubmit)}
-            disabled={loginMutation.isPending}
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%", maxWidth: 400 }}>
+        <Card sx={{ width: "100%", maxWidth: 400 }}>
+          <CardContent
+            sx={{ display: "flex", flexDirection: "column", gap: 3 }}
           >
-            Entrar
-          </Button>
-        </CardContent>
-      </Card>
+            <Typography variant="h5" textAlign="center">
+              Login
+            </Typography>
+
+            <TextField
+              label="Usuário"
+              autoFocus
+              {...register("login")}
+              error={!!errors.login}
+              helperText={errors.login?.message}
+            />
+
+            <TextField
+              label="Senha"
+              type="password"
+              {...register("password")}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
+
+            <Button
+              variant="contained"
+              type="submit"
+              disabled={loginMutation.isPending}
+            >
+              Entrar
+            </Button>
+          </CardContent>
+        </Card>
+      </form>
     </Box>
   );
 }

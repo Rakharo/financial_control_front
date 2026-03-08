@@ -1,11 +1,15 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { createContext, useContext, useEffect, useState } from "react";
 import type { iUserResponse } from "../interfaces/UserInterface";
+import { getMe } from "../services/UserService";
 
 type UserContextType = {
   user: iUserResponse | null;
   token: string | null;
-  setAuth: (user: iUserResponse, accessToken: string, refreshToken: string) => void;
+  setAuth: (
+    user: iUserResponse,
+    accessToken: string,
+    refreshToken: string,
+  ) => void;
   logout: () => void;
 };
 
@@ -15,7 +19,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<iUserResponse | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  function setAuth(user: iUserResponse, accessToken: string, refreshToken: string) {
+  function setAuth(
+    user: iUserResponse,
+    accessToken: string,
+    refreshToken: string,
+  ) {
     setUser(user);
 
     localStorage.setItem("accessToken", accessToken);
@@ -26,17 +34,26 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setToken(null);
 
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   }
 
   useEffect(() => {
-    const existingToken = localStorage.getItem("token");
+    async function loadUser() {
+      const token = localStorage.getItem("accessToken");
 
-    if (existingToken) {
-      setToken(existingToken);
-    } else {
-      logout();
+      if (!token) return;
+
+      try {
+        const user = await getMe();
+        setUser(user);
+      } catch {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+      }
     }
+
+    loadUser();
   }, []);
 
   return (

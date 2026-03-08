@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
-import { useSummary } from "../../hooks/useSummary";
+import { useSummary } from "../../hooks/useTransactions";
 
 export default function Dashboard() {
-  const { data, isLoading } = useSummary();
+  const { data, isLoading } = useSummary()
 
   if (isLoading) {
     return <div>Carregando...</div>;
