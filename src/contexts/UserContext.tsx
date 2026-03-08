@@ -9,7 +9,7 @@ type User = {
 type UserContextType = {
   user: User | null;
   token: string | null;
-  setAuth: (user: User, token: string) => void;
+  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   logout: () => void;
 };
 
@@ -19,11 +19,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  function setAuth(user: User, token: string) {
+  function setAuth(user: User, accessToken: string, refreshToken: string) {
     setUser(user);
-    setToken(token);
 
-    localStorage.setItem("token", token);
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
   }
 
   function logout() {
@@ -39,9 +39,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     if (existingToken) {
       setToken(existingToken);
     } else {
-      logout()
+      logout();
     }
-  }, [])
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, token, setAuth, logout }}>

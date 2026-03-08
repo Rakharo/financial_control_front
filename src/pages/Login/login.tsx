@@ -32,7 +32,7 @@ export default function Login() {
   async function onSubmit(data: LoginFormData) {
     const result = await loginMutation.mutateAsync(data);
 
-    setAuth(result.user, result.token);
+    setAuth(result.user, result.access_token, result.refresh_token);
 
     navigate("/dashboard");
   }
