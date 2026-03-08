@@ -17,5 +17,7 @@ export function useSummary(month?: number, year?: number) {
 
       return response.data as Summary;
     },
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 }
