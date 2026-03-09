@@ -1,3 +1,5 @@
+import type { iCategoryResponse } from "./CategoryInterface";
+
 export interface iSummary {
   balance: number;
   total_income: number;
@@ -19,7 +21,7 @@ export interface iTransactionResponse {
     amount: number;
     frequency: string;
     type: string;
-    category: string;
+    category: iCategoryResponse;
     created_at: string;
     updated_at: string;
 }

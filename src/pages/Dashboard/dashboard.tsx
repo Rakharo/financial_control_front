@@ -1,62 +1,42 @@
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
-import { useSummary } from "../../hooks/useTransactions";
+import { Box, Divider, Stack } from "@mui/material";
+import { useSummary, useTransactionsList } from "../../hooks/useTransactions";
+import Summary from "./components/summary";
+import BaseCard from "../../components/global/BaseCard";
+import { LastTransactions } from "./components/lastTransactions";
 
 export default function Dashboard() {
-  const { data, isLoading } = useSummary()
+  const { data: summaryData, isLoading: summaryLoading } = useSummary();
+  const { data: transactionData, isLoading: transactionLoading } =
+    useTransactionsList();
 
-  if (isLoading) {
+  if (summaryLoading && transactionLoading) {
     return <div>Carregando...</div>;
   }
 
+  console.log(transactionData);
   return (
-    <Box>
-      <Typography variant="h4" mb={3}>
-        Dashboard
-      </Typography>
+    <Stack>
+      <Summary data={summaryData} />
+      <Stack
+        spacing={{ xs: 1, sm: 2, md: 4 }}
+        sx={{ marginTop: "2em" }}
+        direction="row"
+        divider={<Divider orientation="vertical" flexItem />}
+      >
+        <LastTransactions data={transactionData} />
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 4}}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary">
-                Saldo atual
-              </Typography>
+        <BaseCard cardTitle="Minhas categorias">
+          <Box>
+            
+          </Box>
+        </BaseCard>        
 
-              <Typography variant="h5">
-                R$ {data?.balance.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4}}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary">
-                Receitas
-              </Typography>
-
-              <Typography variant="h5" color="success.main">
-                R$ {data?.total_income.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4}}>
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary">
-                Despesas
-              </Typography>
-
-              <Typography variant="h5" color="error.main">
-                R$ {data?.total_expense.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+        <BaseCard cardTitle="Outras informações">
+          <Box>
+            
+          </Box>
+        </BaseCard>    
+      </Stack>
+    </Stack>
   );
 }

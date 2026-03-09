@@ -6,3 +6,8 @@ export async function getSummary(month?: number, year?: number) {
   });
   return response.data;
 }
+
+export async function getTransactionsList() {
+  const response = await api.get("/transaction");
+  return response.data
+}
