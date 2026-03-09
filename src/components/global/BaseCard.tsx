@@ -13,6 +13,10 @@ export default function BaseCard(props: {
   background?: React.ReactNode;
   cardTitle?: string;
   centerTitle?: boolean;
+  cardTitleAction?: boolean;
+  cardTitleBtnText?: string;
+  cardTitleOnClick?: () => void;
+  cardTitleBtnIcon?: React.ReactNode;
   titleColor?: string;
   subHeaderColor?: string;
   cardDescription?: string;
@@ -32,31 +36,56 @@ export default function BaseCard(props: {
       sx={{
         ...props.sx,
         padding: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        position: props.background ? 'relative' : undefined,
-        overflow: props.background ? 'hidden' : undefined,
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        position: props.background ? "relative" : undefined,
+        overflow: props.background ? "hidden" : undefined,
       }}
     >
       {props.background ? (
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        >
           {props.background}
         </div>
       ) : null}
 
-      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          width: "100%",
+        }}
+      >
         {(props.cardTitle || props.cardDescription) && (
           <CardHeader
             title={props.cardTitle}
             subheader={props.cardDescription}
+            action={props.cardTitleAction && (
+                <BaseButton onClick={props.cardTitleOnClick} btnText={props.cardTitleBtnText} startIcon={props.cardTitleBtnIcon} />
+            )}
             slotProps={
-              props.centerTitle ? {
-                title: { textAlign: "center", color: `${props.titleColor}` },
-              } :
-              {subheader: {
-                color: props.subHeaderColor
-              }}
+              props.centerTitle
+                ? {
+                    title: {
+                      textAlign: "center",
+                      color: `${props.titleColor}`,
+                    },
+                  }
+                : {
+                    subheader: {
+                      color: props.subHeaderColor,
+                    },
+                  }
             }
           />
         )}
@@ -68,7 +97,16 @@ export default function BaseCard(props: {
             alt={props.mediaAlt}
           />
         )}
-        <CardContent sx={{ display: 'flex', flexDirection: 'column', flex: 1, ...props.contentStyle }}>{props.children}</CardContent>
+        <CardContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            ...props.contentStyle,
+          }}
+        >
+          {props.children}
+        </CardContent>
 
         {props.hasActions && (
           <CardActions>

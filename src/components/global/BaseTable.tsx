@@ -74,7 +74,7 @@ export default function BaseTable<T>({ data, columns }: BaseTableProps<T>) {
               return (
                 <TableCell
                   key={col.title}
-                  align={col.align ?? "left"}
+                  align={col.align ?? "center"}
                   sx={{
                     backgroundColor: "primary.light",
                     color: "primary.contrastText",

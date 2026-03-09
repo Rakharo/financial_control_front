@@ -13,7 +13,6 @@ export default function Dashboard() {
     return <div>Carregando...</div>;
   }
 
-  console.log(transactionData);
   return (
     <Stack>
       <Summary data={summaryData} />
