@@ -11,7 +11,7 @@ export interface iTransactionRequest {
     amount: number;
     frequency: string;
     type: string;
-    category: string;
+    category_id: number;
 }
 
 export interface iTransactionResponse {

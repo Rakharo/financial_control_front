@@ -1,5 +1,5 @@
 import { Add, EditOutlined, Delete } from "@mui/icons-material";
-import { Chip, Stack } from "@mui/material";
+import { Chip, Divider, Stack } from "@mui/material";
 import BaseButton from "../../../components/global/BaseButton";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
@@ -7,13 +7,11 @@ import BaseTooltip from "../../../components/global/BaseTooltip";
 import { formatDateBR } from "../../../utils/formatter";
 import type { iCategoryResponse } from "../../../interfaces/CategoryInterface";
 
-export default function UserCategories(props: {
-    data: iCategoryResponse[];
-}) {
+export default function UserCategories(props: { data: iCategoryResponse[] }) {
   return (
     <BaseCard
       cardTitle="Minhas Categorias"
-      contentStyle={{ gap: 1 }}
+      contentStyle={{ gap: 1, maxHeight: '60dvh' }}
       cardTitleAction
       cardTitleBtnText="Nova Categoria"
       cardTitleBtnIcon={<Add fontSize="small" />}
@@ -22,26 +20,42 @@ export default function UserCategories(props: {
       <BaseTable
         data={props.data}
         columns={[
-          { title: "Nome", key: "Name" },
+          {
+            title: "Nome",
+            key: "name",
+            render: (item) => item.name.toUpperCase(),
+          },
           {
             title: "Criada em",
-            key: "Created_at",
-            render: (item) => formatDateBR(item.Created_at!),
+            align: "center",
+            key: "created_at",
+            render: (item) => formatDateBR(item.created_at!),
           },
           {
             title: "Tipo",
-            key: "Type",
+            align: "center",
+            key: "type",
             render: (item) =>
-              item.Type === "income" ? (
+              item.type === "income" ? (
                 <Chip label="Receita" color="success" sx={{ width: "100%" }} />
               ) : (
                 <Chip label="Despesa" color="error" sx={{ width: "100%" }} />
               ),
           },
           {
+            title: "Origem",
+            align: "center",
+            render: (item) => (item.user_id === 0 ? "Sistema" : "Usuário"),
+          },
+          {
             title: "Ações",
+            align: "center",
             render: (item) => (
-              <Stack>
+              <Stack
+                justifyContent='center'
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+              >
                 <BaseTooltip content="Editar" arrow placement="left">
                   <BaseButton
                     isIconBtn
@@ -49,7 +63,7 @@ export default function UserCategories(props: {
                     onClick={() => console.log(item)}
                   />
                 </BaseTooltip>
-                <BaseTooltip content="Deletar" arrow placement="left">
+                <BaseTooltip content="Deletar" arrow placement="right">
                   <BaseButton
                     isIconBtn
                     icon={<Delete fontSize="small" color="error" />}

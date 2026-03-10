@@ -10,7 +10,7 @@ export default function Summary(props: {
         Dashboard
       </Typography>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>

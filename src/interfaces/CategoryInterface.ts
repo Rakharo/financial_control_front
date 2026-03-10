@@ -4,10 +4,10 @@ export interface iCategoryRequest {
 }
 
 export interface iCategoryResponse {
-    ID: number;
-    UserID: number | null;
-    Name: string;
-    Type: string;
-    Created_at?: string;
-    Updated_at?: string;
+    id: number;
+    user_id: number | null;
+    name: string;
+    type: string;
+    created_at?: string;
+    updated_at?: string;
 }

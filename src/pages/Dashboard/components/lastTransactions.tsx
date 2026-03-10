@@ -1,63 +1,83 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Add, EditOutlined, Delete } from "@mui/icons-material";
-import { Chip, Stack } from "@mui/material";
+import { Chip, Divider, Stack } from "@mui/material";
 import BaseButton from "../../../components/global/BaseButton";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
 import BaseTooltip from "../../../components/global/BaseTooltip";
 import { formatDateBR } from "../../../utils/formatter";
+import type { iTransactionResponse } from "../../../interfaces/TransactionInterface";
 
-export function LastTransactions(props: { data: any[] }) {
+export function LastTransactions(props: {
+  data: iTransactionResponse[];
+  openDialog: () => void;
+  editData: (data: iTransactionResponse) => void;
+}) {
   return (
     <BaseCard
       cardTitle="Últimos lançamentos"
-      contentStyle={{ gap: 1 }}
+      contentStyle={{ gap: 1, maxHeight: '60dvh'}}
       cardTitleAction
       cardTitleBtnText="Novo Lançamento"
       cardTitleBtnIcon={<Add fontSize="small" />}
-      cardTitleOnClick={() => console.log("clicou")}
+      cardTitleOnClick={() => props.openDialog()}
     >
       <BaseTable
         data={props.data}
         columns={[
-          { title: "Nome", key: "Title" },
+          { title: "Nome", key: "title" },
           {
             title: "Valor",
-            key: "Amount",
-            render: (item) => `R$ ${item.Amount.toFixed(2)}`,
+            align: "center",
+            key: "amount",
+            render: (item) => `R$ ${item.amount.toFixed(2)}`,
           },
           {
             title: "Categoria",
-            key: "Category",
-            render: (item) => item.Category.Name.toUpperCase(),
+            align: "center",
+            key: "category",
+            render: (item) => item.category.name.toUpperCase(),
           },
           {
             title: "Criada em",
-            key: "CreatedAt",
-            render: (item) => formatDateBR(item.CreatedAt),
+            align: "center",
+            key: "created_at",
+            render: (item) => formatDateBR(item.created_at),
           },
-          { title: "Tipo", key: "Type", render: (item) => (
-            item.Type === "income" ? (
-                <Chip label="Receita" color="success" sx={{width: "100%"}} />
-            ) : (
-                <Chip label="Despesa" color="error" sx={{width: "100%"}} />
-            )
-          )},
-          { title: "Frequência", key: "Frequency", render: (item) => (
-            item.Frequency === "variable" ? "Variado" : "Fixo"
-          )},
+          {
+            title: "Tipo",
+            align: "center",
+            key: "type",
+            render: (item) =>
+              item.type === "income" ? (
+                <Chip label="Receita" color="success" sx={{ width: "100%" }} />
+              ) : (
+                <Chip label="Despesa" color="error" sx={{ width: "100%" }} />
+              ),
+          },
+          {
+            title: "Frequência",
+            align: "center",
+            key: "frequency",
+            render: (item) =>
+              item.frequency === "variable" ? "Variado" : "Fixo",
+          },
           {
             title: "Ações",
+            align: "center",
             render: (item) => (
-              <Stack>
+              <Stack
+                justifyContent="center"
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+              >
                 <BaseTooltip content="Editar" arrow placement="left">
                   <BaseButton
                     isIconBtn
                     icon={<EditOutlined fontSize="small" />}
-                    onClick={() => console.log(item)}
+                    onClick={() => props.editData(item)}
                   />
                 </BaseTooltip>
-                <BaseTooltip content="Deletar" arrow placement="left">
+                <BaseTooltip content="Deletar" arrow placement="right">
                   <BaseButton
                     isIconBtn
                     icon={<Delete fontSize="small" color="error" />}
