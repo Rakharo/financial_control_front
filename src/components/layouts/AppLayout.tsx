@@ -7,14 +7,13 @@ export default function AppLayout() {
     <Box
       sx={{
         minHeight: "100dvh",
-        padding: 3,
-        backgroundColor: "#f5f5f5",
+        padding: '2em',
         flexGrow: 1,
       }}
     >
       <TopBar />
 
-      <Box sx={{ padding: 3 }}>
+      <Box sx={{ marginTop: '2em'}}>
         <Outlet />
       </Box>
     </Box>

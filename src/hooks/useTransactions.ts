@@ -44,6 +44,9 @@ export function useCreateTransaction() {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["summary"],
+      });
     },
   });
 }
@@ -56,6 +59,9 @@ export function useUpdateTransaction() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["summary"],
       });
     },
   });

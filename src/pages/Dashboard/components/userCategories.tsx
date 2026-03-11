@@ -7,15 +7,19 @@ import BaseTooltip from "../../../components/global/BaseTooltip";
 import { formatDateBR } from "../../../utils/formatter";
 import type { iCategoryResponse } from "../../../interfaces/CategoryInterface";
 
-export default function UserCategories(props: { data: iCategoryResponse[] }) {
+export default function UserCategories(props: {
+  data: iCategoryResponse[];
+  openDialog: () => void;
+  editData: (data: iCategoryResponse) => void;
+}) {
   return (
     <BaseCard
       cardTitle="Minhas Categorias"
-      contentStyle={{ gap: 1, maxHeight: '60dvh' }}
+      contentStyle={{ gap: 1, maxHeight: "50dvh", overflow: "auto"}}
       cardTitleAction
       cardTitleBtnText="Nova Categoria"
       cardTitleBtnIcon={<Add fontSize="small" />}
-      cardTitleOnClick={() => console.log("clicou")}
+      cardTitleOnClick={() => props.openDialog()}
     >
       <BaseTable
         data={props.data}
@@ -51,26 +55,30 @@ export default function UserCategories(props: { data: iCategoryResponse[] }) {
             title: "Ações",
             align: "center",
             render: (item) => (
-              <Stack
-                justifyContent='center'
-                direction="row"
-                divider={<Divider orientation="vertical" flexItem />}
-              >
-                <BaseTooltip content="Editar" arrow placement="left">
-                  <BaseButton
-                    isIconBtn
-                    icon={<EditOutlined fontSize="small" />}
-                    onClick={() => console.log(item)}
-                  />
-                </BaseTooltip>
-                <BaseTooltip content="Deletar" arrow placement="right">
-                  <BaseButton
-                    isIconBtn
-                    icon={<Delete fontSize="small" color="error" />}
-                    onClick={() => console.log(item)}
-                  />
-                </BaseTooltip>
-              </Stack>
+              <>
+                {item.user_id === 0 ? '-' : (
+                  <Stack
+                    justifyContent="center"
+                    direction="row"
+                    divider={<Divider orientation="vertical" flexItem />}
+                  >
+                    <BaseTooltip content="Editar" arrow placement="left">
+                      <BaseButton
+                        isIconBtn
+                        icon={<EditOutlined fontSize="small" />}
+                        onClick={() => props.editData(item)}
+                      />
+                    </BaseTooltip>
+                    <BaseTooltip content="Deletar" arrow placement="right">
+                      <BaseButton
+                        isIconBtn
+                        icon={<Delete fontSize="small" color="error" />}
+                        onClick={() => console.log(item)}
+                      />
+                    </BaseTooltip>
+                  </Stack>
+                )}
+              </>
             ),
           },
         ]}

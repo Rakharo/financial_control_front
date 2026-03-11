@@ -3,7 +3,7 @@ import { Grid, Stack } from "@mui/material";
 import Summary from "./components/summary";
 import { LastTransactions } from "./components/lastTransactions";
 import UserCategories from "./components/userCategories";
-import { useCategoryList } from "../../hooks/useCategory";
+import { useCategoryList, useCreateCategory, useUpdateCategory } from "../../hooks/useCategory";
 import {
   useCreateTransaction,
   useSummary,
@@ -14,19 +14,23 @@ import { useState } from "react";
 import TransactionDialog from "./components/forms/transactionDialog";
 import CategoryDialog from "./components/forms/categoryDialog";
 import type { iTransactionResponse } from "../../interfaces/TransactionInterface";
+import type { iCategoryResponse } from "../../interfaces/CategoryInterface";
 
 export default function Dashboard() {
   const [openTransaction, setOpenTransaction] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
   const [editingTransaction, setEditingTransaction] =
     useState<iTransactionResponse | null>(null);
-  // const [editingCategory, setEditingCategory] = useState(false);
+  const [editingCategory, setEditingCategory] =
+    useState<iCategoryResponse | null>(null);
 
   const { data: summaryData, isLoading: summaryLoading } = useSummary();
   const { data: transactionData, isLoading: transactionLoading } =
     useTransactionsList();
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
+  const createCategory = useCreateCategory();
+  const updatedCategory = useUpdateCategory();
 
   const { data: categoryData, isLoading: categoryLoading } = useCategoryList();
 
@@ -43,7 +47,14 @@ export default function Dashboard() {
   }
 
   const handleCreateCategory = (data: any) => {
-    console.log("create category", data);
+    if(!editingCategory) {
+      createCategory.mutate(data);
+    } else {
+      updatedCategory.mutate({
+        id: editingCategory.id,
+        data: data
+      })
+    }
     setOpenCategory(false);
   };
 
@@ -62,13 +73,19 @@ export default function Dashboard() {
             editData={(data: iTransactionResponse) => {
               setEditingTransaction(data);
               setOpenTransaction(true);
-              console.log(data);
             }}
           />
         </Grid>
 
         <Grid size={{ xs: 12, md: 5 }}>
-          <UserCategories data={categoryData || []} />
+          <UserCategories
+            data={categoryData || []}
+            openDialog={() => setOpenCategory(true)}
+            editData={(data: iCategoryResponse) => {
+              setEditingCategory(data);
+              setOpenCategory(true);
+            }}
+          />
         </Grid>
       </Grid>
 
@@ -80,14 +97,32 @@ export default function Dashboard() {
         }}
         onSubmit={handleSubmitTransaction}
         categoriesList={categoryData || []}
-        initialData={editingTransaction ? {...editingTransaction, category_id: editingTransaction.category.id} : null}
+        initialData={
+          editingTransaction
+            ? {
+                ...editingTransaction,
+                category_id: editingTransaction.category.id,
+              }
+            : null
+        }
         isEdit={editingTransaction !== null}
       />
 
       <CategoryDialog
         open={openCategory}
-        onClose={() => setOpenCategory(false)}
+        onClose={() => {
+          setOpenCategory(false);
+          setEditingCategory(null);
+        }}
         onSubmit={handleCreateCategory}
+        initialData={
+          editingCategory
+            ? {
+                ...editingCategory,
+              }
+            : null
+        }
+        isEdit={editingCategory !== null}
       />
     </Stack>
   );

@@ -1,15 +1,12 @@
-import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
+import { Typography, Grid, Card, CardContent } from "@mui/material";
 import type { iSummary } from "../../../interfaces/TransactionInterface";
+import BaseCard from "../../../components/global/BaseCard";
 
 export default function Summary(props: {
     data: iSummary | null;
 }) {
   return (
-    <Box>
-      <Typography variant="h4" mb={3}>
-        Dashboard
-      </Typography>
-
+    <BaseCard cardTitle="Meu resumo">
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
@@ -47,6 +44,6 @@ export default function Summary(props: {
           </Card>
         </Grid>
       </Grid>
-    </Box>
+    </BaseCard>
   );
 }

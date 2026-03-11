@@ -9,10 +9,19 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
-import { AccountCircle, ExitToApp, Settings } from "@mui/icons-material";
+import {
+  AccountCircle,
+  DarkMode,
+  ExitToApp,
+  LightMode,
+  Settings,
+} from "@mui/icons-material";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import BaseSwitch from "../global/BaseSwitch";
+import { useThemeMode } from "../../contexts/ThemeContext";
+import BaseTooltip from "../global/BaseTooltip";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -54,6 +63,7 @@ function stringAvatar(name?: string) {
 export default function TopBar() {
   const navigate = useNavigate();
   const { user, logout } = useUser();
+  const { mode, toggleMode } = useThemeMode();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -76,12 +86,34 @@ export default function TopBar() {
       position="static"
       sx={{
         borderRadius: "1rem",
+        color: "primary.contrastText",
       }}
     >
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h6">Controle Financeiro</Typography>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <BaseTooltip content={mode === "dark" ? "Escuro" : "Claro"}>
+            <span>
+              <BaseSwitch
+                value={mode === "dark"}
+                onChange={toggleMode}
+                size="small"
+                sx={{
+                  "& .MuiSwitch-thumb": {
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    transform: "translateY(-3px)",
+                  },
+                }}
+                icon={<LightMode fontSize="small" color="warning" />}
+                checkedIcon={<DarkMode fontSize="small" sx={{color: "white"}} />}
+              />
+            </span>
+          </BaseTooltip>
           <Typography>{user?.name}</Typography>
 
           <IconButton onClick={handleOpenMenu} sx={{ p: 0 }}>
