@@ -54,9 +54,8 @@ export default function TransactionDialog(props: {
     if (!props.open) {
       form.reset(defaultValues);
     }
-  }, [props.open, props.initialData, form])
+  }, [props.open, props.initialData, form]);
 
-  
   return (
     <BaseDialog
       open={props.open}
@@ -116,11 +115,15 @@ export default function TransactionDialog(props: {
                 value={field.value ?? ""}
                 options={props.categoriesList}
                 required
+                searchable
                 onChange={(value) => field.onChange(value)}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option.id}
+                groupBy={(c) =>
+                  c.user_id === 0 ? "Categorias do sistema" : "Suas categorias"
+                }
               />
             )}
           />

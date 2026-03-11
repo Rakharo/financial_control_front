@@ -14,7 +14,7 @@ export interface iTransactionRequest {
     category_id: number;
 }
 
-export interface iTransactionResponse {
+export interface iTransaction {
     id: number;
     user_id: number;
     title: string
@@ -24,4 +24,12 @@ export interface iTransactionResponse {
     category: iCategoryResponse;
     created_at: string;
     updated_at: string;
+}
+
+export interface iTransactionResponse {
+    transactions: iTransaction[];
+    page: number;
+    total: number;
+    month: number;
+    year: number;
 }

@@ -1,19 +1,42 @@
 import { Typography, Grid, Card, CardContent } from "@mui/material";
 import type { iSummary } from "../../../interfaces/TransactionInterface";
 import BaseCard from "../../../components/global/BaseCard";
+import { CurrencyExchange, MoneyOff, PriceCheck } from "@mui/icons-material";
 
-export default function Summary(props: {
-    data: iSummary | null;
-}) {
+export default function Summary(props: { data: iSummary | null }) {
   return (
     <BaseCard cardTitle="Meu resumo">
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
-              <Typography color="text.secondary">Saldo atual</Typography>
+              <Typography
+                color="text.secondary"
+                sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+              >
+                <CurrencyExchange
+                  fontSize="large"
+                  color={
+                    props.data?.balance
+                      ? props.data?.balance < 0
+                        ? "error"
+                        : "success"
+                      : "warning"
+                  }
+                />
+                Saldo atual
+              </Typography>
 
-              <Typography variant="h5">
+              <Typography
+                variant="h5"
+                color={
+                  props.data?.balance
+                    ? props.data?.balance < 0
+                      ? "error"
+                      : "success"
+                    : "warning"
+                }
+              >
                 R$ {props.data?.balance.toFixed(2)}
               </Typography>
             </CardContent>
@@ -23,7 +46,13 @@ export default function Summary(props: {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
-              <Typography color="text.secondary">Receitas</Typography>
+              <Typography
+                color="text.secondary"
+                sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+              >
+                <PriceCheck fontSize="large" color="success" />
+                Receitas
+              </Typography>
 
               <Typography variant="h5" color="success.main">
                 R$ {props.data?.total_income.toFixed(2)}
@@ -35,7 +64,13 @@ export default function Summary(props: {
         <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
-              <Typography color="text.secondary">Despesas</Typography>
+              <Typography
+                color="text.secondary"
+                sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+              >
+                <MoneyOff fontSize="large" color="error" />
+                Despesas
+              </Typography>
 
               <Typography variant="h5" color="error.main">
                 R$ {props.data?.total_expense.toFixed(2)}

@@ -164,7 +164,7 @@ export default function TopBar() {
               }}
               sx={{ gap: 1 }}
             >
-              <ExitToApp fontSize="small" color="primary" />
+              <ExitToApp fontSize="small" color="error" />
               Sair
             </MenuItem>
           </Menu>

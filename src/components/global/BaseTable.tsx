@@ -9,6 +9,8 @@ import {
   TableRow,
   Paper,
   TableSortLabel,
+  Pagination,
+  Stack,
 } from "@mui/material";
 
 type SortDirection = "asc" | "desc";
@@ -23,12 +25,24 @@ type BaseTableColumn<T> = {
   align?: "left" | "center" | "right";
 };
 
+type BaseTablePagination = {
+  page: number;
+  limit: number;
+  total: number;
+  onPageChange: (page: number) => void;
+};
+
 type BaseTableProps<T> = {
   data: T[];
   columns: BaseTableColumn<T>[];
+  pagination?: BaseTablePagination;
 };
 
-export default function BaseTable<T>({ data, columns }: BaseTableProps<T>) {
+export default function BaseTable<T>({
+  data,
+  columns,
+  pagination,
+}: BaseTableProps<T>) {
   const visibleColumns = columns.filter((col) => col.visible !== false);
 
   const [orderBy, setOrderBy] = React.useState<keyof T | null>(null);
@@ -48,7 +62,7 @@ export default function BaseTable<T>({ data, columns }: BaseTableProps<T>) {
       }
 
       return order === "asc"
-        ? String(aValue).localeCompare(String(bValue))
+        ? String(aValue).localeCompare(String(aValue))
         : String(bValue).localeCompare(String(aValue));
     });
   }, [data, orderBy, order]);
@@ -62,75 +76,86 @@ export default function BaseTable<T>({ data, columns }: BaseTableProps<T>) {
     }
   };
 
+  const totalPages = pagination
+    ? Math.ceil(pagination.total / pagination.limit)
+    : 0;
+
   return (
-    <TableContainer sx={{ marginBottom: "2em" }} component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {visibleColumns.map((col) => {
-              const sortKey = col.sortKey ?? col.key;
-              const isSortable = col.sortable && sortKey;
-
-              return (
-                <TableCell
-                  key={col.title}
-                  align={col.align ?? "left"}
-                  sx={{
-                    backgroundColor: "primary.main",
-                    color: "primary.contrastText",
-                    fontWeight: 600,
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  }}
-                >
-                  {isSortable ? (
-                    <TableSortLabel
-                      active={orderBy === sortKey}
-                      direction={orderBy === sortKey ? order : "asc"}
-                      onClick={() => handleSort(sortKey)}
-                    >
-                      {col.title}
-                    </TableSortLabel>
-                  ) : (
-                    col.title
-                  )}
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {sortedData.length === 0 ? (
+    <>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell colSpan={visibleColumns.length} align="center">
-                Sem informações para exibir.
-              </TableCell>
-            </TableRow>
-          ) : (
-            sortedData.map((item, idx) => (
-              <TableRow
-                key={idx}
-                // sx={{
-                //   "&:hover": {
-                //     backgroundColor: "info.light",
-                //   },
-                // }}
-              >
-                {visibleColumns.map((col, colIdx) => (
-                  <TableCell key={colIdx} align={col.align ?? "left"}>
-                    {col.render
-                      ? col.render(item)
-                      : col.key
-                      ? (item as any)[col.key]
-                      : null}
+              {visibleColumns.map((col) => {
+                const sortKey = col.sortKey ?? col.key;
+                const isSortable = col.sortable && sortKey;
+
+                return (
+                  <TableCell
+                    key={col.title}
+                    align={col.align ?? "left"}
+                    sx={{
+                      backgroundColor: "primary.main",
+                      color: "primary.contrastText",
+                      fontWeight: 600,
+                      borderBottom: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
+                    {isSortable ? (
+                      <TableSortLabel
+                        active={orderBy === sortKey}
+                        direction={orderBy === sortKey ? order : "asc"}
+                        onClick={() => handleSort(sortKey)}
+                      >
+                        {col.title}
+                      </TableSortLabel>
+                    ) : (
+                      col.title
+                    )}
                   </TableCell>
-                ))}
+                );
+              })}
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {sortedData.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={visibleColumns.length} align="center">
+                  Sem informações para exibir.
+                </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            ) : (
+              sortedData.map((item, idx) => (
+                <TableRow key={idx}>
+                  {visibleColumns.map((col, colIdx) => (
+                    <TableCell key={colIdx} align={col.align ?? "left"}>
+                      {col.render
+                        ? col.render(item)
+                        : col.key
+                        ? (item as any)[col.key]
+                        : null}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      {pagination && totalPages > 1 && (
+        <Stack alignItems="center" sx={{ mt: 2 }}>
+          <Pagination
+            page={pagination.page}
+            count={totalPages}
+            onChange={(_, value) => pagination.onPageChange(value)}
+            size="small"
+            color="primary"
+          />
+        </Stack>
+      )}
+    </>
   );
 }

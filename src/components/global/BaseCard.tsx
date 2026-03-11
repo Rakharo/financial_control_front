@@ -11,7 +11,8 @@ import BaseButton from "./BaseButton";
 export default function BaseCard(props: {
   children?: React.ReactNode;
   background?: React.ReactNode;
-  cardTitle?: string;
+  cardTitle?: string | React.ReactElement;
+  cardDescription?: string | React.ReactElement;
   centerTitle?: boolean;
   cardTitleAction?: boolean;
   cardTitleBtnText?: string;
@@ -19,7 +20,6 @@ export default function BaseCard(props: {
   cardTitleBtnIcon?: React.ReactNode;
   titleColor?: string;
   subHeaderColor?: string;
-  cardDescription?: string;
   hasActions?: boolean;
   onClick?: () => void;
   btnText?: string;

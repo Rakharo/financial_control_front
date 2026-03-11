@@ -9,7 +9,7 @@ import {
 } from "../services/TransactionService";
 import type { iTransactionRequest } from "../interfaces/TransactionInterface";
 
-export function useSummary(month?: number, year?: number) {
+export function useSummary({month, year}: {month?: number, year?: number}) {
   return useQuery({
     queryKey: ["summary", month, year],
     queryFn: () => getSummary(month, year),
@@ -18,10 +18,10 @@ export function useSummary(month?: number, year?: number) {
   });
 }
 
-export function useTransactionsList() {
+export function useTransactionsList({page, limit, month, year}: {page?: number, limit?: number, month?: number, year?: number}) {
   return useQuery({
-    queryKey: ["transactions"],
-    queryFn: () => getTransactionsList(),
+    queryKey: ["transactions", page, limit, month, year],
+    queryFn: () => getTransactionsList(page, limit, month, year),
     refetchOnWindowFocus: false,
     retry: 1,
   });

@@ -49,7 +49,13 @@ export default function UserCategories(props: {
           {
             title: "Origem",
             align: "center",
-            render: (item) => (item.user_id === 0 ? "Sistema" : "Usuário"),
+            sortable: true,
+            key: "user_id",
+            render: (item) => item.user_id === 0 ? (
+              <Chip label="Sistema" color="default" sx={{ width: "100%" }} />
+            ) : (
+              <Chip label="Usuário" color="secondary" sx={{ width: "100%" }} />
+            ), 
           },
           {
             title: "Ações",

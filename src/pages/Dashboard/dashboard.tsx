@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Stack } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import Summary from "./components/summary";
 import { LastTransactions } from "./components/lastTransactions";
 import UserCategories from "./components/userCategories";
-import { useCategoryList, useCreateCategory, useUpdateCategory } from "../../hooks/useCategory";
+import {
+  useCategoryList,
+  useCreateCategory,
+  useUpdateCategory,
+} from "../../hooks/useCategory";
 import {
   useCreateTransaction,
   useSummary,
@@ -13,26 +17,40 @@ import {
 import { useState } from "react";
 import TransactionDialog from "./components/forms/transactionDialog";
 import CategoryDialog from "./components/forms/categoryDialog";
-import type { iTransactionResponse } from "../../interfaces/TransactionInterface";
+import type { iTransaction } from "../../interfaces/TransactionInterface";
 import type { iCategoryResponse } from "../../interfaces/CategoryInterface";
+import dayjs, { Dayjs } from "dayjs";
+import BaseDatePicker from "../../components/global/BaseDatePicker";
 
 export default function Dashboard() {
   const [openTransaction, setOpenTransaction] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
   const [editingTransaction, setEditingTransaction] =
-    useState<iTransactionResponse | null>(null);
+    useState<iTransaction | null>(null);
   const [editingCategory, setEditingCategory] =
     useState<iCategoryResponse | null>(null);
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
-  const { data: summaryData, isLoading: summaryLoading } = useSummary();
+  const [filterDate, setFilterDate] = useState<Dayjs | null>(dayjs());
+
+  const { data: summaryData, isLoading: summaryLoading } = useSummary({
+    month: filterDate ? filterDate.month() + 1 : undefined,
+    year: filterDate ? filterDate.year() : undefined,
+  });
   const { data: transactionData, isLoading: transactionLoading } =
-    useTransactionsList();
+    useTransactionsList({
+      page,
+      limit,
+      month: filterDate ? filterDate.month() + 1 : undefined,
+      year: filterDate ? filterDate.year() : undefined,
+    });
+  const { data: categoryData, isLoading: categoryLoading } = useCategoryList();
+
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
   const createCategory = useCreateCategory();
   const updatedCategory = useUpdateCategory();
-
-  const { data: categoryData, isLoading: categoryLoading } = useCategoryList();
 
   function handleSubmitTransaction(data: any) {
     if (!editingTransaction) {
@@ -47,13 +65,13 @@ export default function Dashboard() {
   }
 
   const handleCreateCategory = (data: any) => {
-    if(!editingCategory) {
+    if (!editingCategory) {
       createCategory.mutate(data);
     } else {
       updatedCategory.mutate({
         id: editingCategory.id,
-        data: data
-      })
+        data: data,
+      });
     }
     setOpenCategory(false);
   };
@@ -64,16 +82,31 @@ export default function Dashboard() {
 
   return (
     <Stack spacing={2}>
+      <Stack direction="row" justifyContent="space-between" spacing={2}>
+        <Typography variant="h5">Dashboard</Typography>
+
+        <BaseDatePicker
+          label="Período"
+          value={filterDate}
+          onChange={setFilterDate}
+          format="MM/YYYY"
+          views={["year", "month"]}
+          size="small"
+        />
+      </Stack>
       <Summary data={summaryData!} />
       <Grid container spacing={2} sx={{ maxHeight: "100dvh" }}>
         <Grid size={{ xs: 12, md: 7 }}>
           <LastTransactions
-            data={transactionData || []}
+            data={transactionData?.transactions || []}
             openDialog={() => setOpenTransaction(true)}
-            editData={(data: iTransactionResponse) => {
+            editData={(data: iTransaction) => {
               setEditingTransaction(data);
               setOpenTransaction(true);
             }}
+            page={transactionData?.page || 1}
+            totalPages={transactionData?.total || 1}
+            onPageChange={(value) => setPage(value)}
           />
         </Grid>
 

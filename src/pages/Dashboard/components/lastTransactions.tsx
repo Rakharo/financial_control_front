@@ -1,21 +1,24 @@
 import { Add, EditOutlined, Delete } from "@mui/icons-material";
-import { Chip, Divider, Stack } from "@mui/material";
 import BaseButton from "../../../components/global/BaseButton";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
 import BaseTooltip from "../../../components/global/BaseTooltip";
 import { formatDateBR } from "../../../utils/formatter";
-import type { iTransactionResponse } from "../../../interfaces/TransactionInterface";
+import type { iTransaction } from "../../../interfaces/TransactionInterface";
+import { Chip, Stack, Divider } from "@mui/material";
 
 export function LastTransactions(props: {
-  data: iTransactionResponse[];
+  data: iTransaction[];
+  page: number;
+  totalPages: number;
   openDialog: () => void;
-  editData: (data: iTransactionResponse) => void;
+  editData: (data: iTransaction) => void;
+  onPageChange: (page: number) => void;
 }) {
   return (
     <BaseCard
-      cardTitle="Últimos lançamentos"
-      contentStyle={{ gap: 1, maxHeight: '50dvh'}}
+      cardTitle="Últimas transações"
+      contentStyle={{ gap: 1, maxHeight: "50dvh" }}
       cardTitleAction
       cardTitleBtnText="Novo Lançamento"
       cardTitleBtnIcon={<Add fontSize="small" />}
@@ -23,6 +26,12 @@ export function LastTransactions(props: {
     >
       <BaseTable
         data={props.data}
+        pagination={{
+          page: props.page,
+          limit: 10,
+          total: props.totalPages,
+          onPageChange: props.onPageChange,
+        }}
         columns={[
           { title: "Nome", key: "title" },
           {
