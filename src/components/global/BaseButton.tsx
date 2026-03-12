@@ -7,7 +7,7 @@ type BaseButtonProps = {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   variant?: "contained" | "outlined" | "text";
-  color?: "primary" | "secondary" | "error" | "info" | "success" | "warning";
+  color?: "primary" | "secondary" | "error" | "info" | "success" | "warning" | "neutral";
   size?: "small" | "medium" | "large";
   fullWidth?: boolean;
   disabled?: boolean;

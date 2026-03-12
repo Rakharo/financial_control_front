@@ -18,6 +18,7 @@ import {
   Pagination,
 } from "@mui/material";
 import { FirstPage, LastPage } from "@mui/icons-material";
+import { useThemeMode } from "../../contexts/ThemeContext";
 
 type SortDirection = "asc" | "desc";
 
@@ -55,6 +56,8 @@ export default function BaseTable<T>({
   // --- Estado de ordenação ---
   const [orderBy, setOrderBy] = React.useState<keyof T | null>(null);
   const [order, setOrder] = React.useState<SortDirection>("asc");
+
+  const { mode } = useThemeMode();
 
   const sortedData = React.useMemo(() => {
     if (!orderBy) return data;
@@ -136,7 +139,14 @@ export default function BaseTable<T>({
               </TableRow>
             ) : (
               sortedData.map((item, idx) => (
-                <TableRow key={idx}>
+                <TableRow
+                  key={idx}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: mode === 'light' ? '#ecfdf5' : '#10b981', //light=primary[50] & dark=primary[500] 
+                    },
+                  }}
+                >
                   {visibleColumns.map((col, colIdx) => (
                     <TableCell key={colIdx} align={col.align ?? "left"}>
                       {col.render

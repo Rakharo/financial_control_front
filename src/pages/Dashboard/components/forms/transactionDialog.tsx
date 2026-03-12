@@ -67,7 +67,7 @@ export default function TransactionDialog(props: {
           : "Preencha os dados para registrar uma nova transação."
       }
       firstBtnText="Cancelar"
-      firstBtnColor="info"
+      firstBtnColor="neutral"
       firstBtnVariant="text"
       secondBtnText={props.isEdit ? "Salvar" : "Criar"}
       secondBtnColor="primary"

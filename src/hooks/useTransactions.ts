@@ -7,9 +7,10 @@ import {
   getTransactionsList,
   updateTransaction,
 } from "../services/TransactionService";
-import type { iTransactionRequest } from "../interfaces/TransactionInterface";
+import type { iTransaction, iTransactionRequest } from "../interfaces/TransactionInterface";
+import { useAlert } from "../contexts/AlertContext";
 
-export function useSummary({month, year}: {month?: number, year?: number}) {
+export function useSummary({ month, year }: { month?: number; year?: number }) {
   return useQuery({
     queryKey: ["summary", month, year],
     queryFn: () => getSummary(month, year),
@@ -18,7 +19,17 @@ export function useSummary({month, year}: {month?: number, year?: number}) {
   });
 }
 
-export function useTransactionsList({page, limit, month, year}: {page?: number, limit?: number, month?: number, year?: number}) {
+export function useTransactionsList({
+  page,
+  limit,
+  month,
+  year,
+}: {
+  page?: number;
+  limit?: number;
+  month?: number;
+  year?: number;
+}) {
   return useQuery({
     queryKey: ["transactions", page, limit, month, year],
     queryFn: () => getTransactionsList(page, limit, month, year),
@@ -38,14 +49,29 @@ export function useTransactionById(id: number) {
 
 export function useCreateTransaction() {
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   return useMutation({
-    mutationFn: (data: iTransactionRequest) => createTransaction(data),
-    onSuccess: () => {
+    mutationFn: ({data}: {data: iTransactionRequest}) =>
+      createTransaction(data),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
       });
       queryClient.invalidateQueries({
         queryKey: ["summary"],
+      });
+
+      showAlert({
+        title: "Sucesso!",
+        description: `"Transação ${variables.data.title} criada com sucesso!"`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao criar transação!",
+        severity: "error",
       });
     },
   });
@@ -53,22 +79,59 @@ export function useCreateTransaction() {
 
 export function useUpdateTransaction() {
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: iTransactionRequest }) =>
       updateTransaction(id, data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["transactions"],
       });
       queryClient.invalidateQueries({
         queryKey: ["summary"],
       });
+
+      showAlert({
+        title: "Sucesso!",
+        description: `"Transação ${variables.data.title} editada com sucesso!"`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao editar transação!",
+        severity: "error",
+      });
     },
   });
 }
 
 export function useDeleteTransaction() {
+  const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   return useMutation({
-    mutationFn: (id: number) => deleteTransaction(id),
+    mutationFn: ({data} : {data: iTransaction}) => deleteTransaction(data.id),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["summary"],
+      });
+
+      showAlert({
+        title: "Sucesso!",
+        description: `"Transação ${variables.data.title} deletada com sucesso!"`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao deletar transação!",
+        severity: "error",
+      });
+    },
   });
 }

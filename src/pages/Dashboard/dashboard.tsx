@@ -10,6 +10,7 @@ import {
 } from "../../hooks/useCategory";
 import {
   useCreateTransaction,
+  useDeleteTransaction,
   useSummary,
   useTransactionsList,
   useUpdateTransaction,
@@ -21,12 +22,14 @@ import type { iTransaction } from "../../interfaces/TransactionInterface";
 import type { iCategoryResponse } from "../../interfaces/CategoryInterface";
 import dayjs, { Dayjs } from "dayjs";
 import BaseDatePicker from "../../components/global/BaseDatePicker";
+import ConfirmationDialog from "../../components/alert/ConfirmationDialog";
 
 export default function Dashboard() {
   const [openTransaction, setOpenTransaction] = useState(false);
   const [openCategory, setOpenCategory] = useState(false);
   const [editingTransaction, setEditingTransaction] =
     useState<iTransaction | null>(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [editingCategory, setEditingCategory] =
     useState<iCategoryResponse | null>(null);
   const [page, setPage] = useState(1);
@@ -49,12 +52,13 @@ export default function Dashboard() {
 
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
+  const deleteTransaction = useDeleteTransaction();
   const createCategory = useCreateCategory();
   const updatedCategory = useUpdateCategory();
 
   function handleSubmitTransaction(data: any) {
     if (!editingTransaction) {
-      createTransaction.mutate(data);
+      createTransaction.mutate({data: data});
     } else {
       updateTransaction.mutate({
         id: editingTransaction.id,
@@ -75,6 +79,10 @@ export default function Dashboard() {
     }
     setOpenCategory(false);
   };
+
+  function handleDeleteTransaction(transaction: iTransaction) {
+    deleteTransaction.mutate({data: transaction});
+  }
 
   if (summaryLoading && transactionLoading && categoryLoading) {
     return <div>Carregando...</div>;
@@ -103,6 +111,10 @@ export default function Dashboard() {
             editData={(data: iTransaction) => {
               setEditingTransaction(data);
               setOpenTransaction(true);
+            }}
+            deleteData={(data: iTransaction) => {
+              setEditingTransaction(data);
+              setOpenDeleteDialog(true);
             }}
             page={page || 1}
             limit={limit || 10}
@@ -158,6 +170,22 @@ export default function Dashboard() {
             : null
         }
         isEdit={editingCategory !== null}
+      />
+
+      <ConfirmationDialog
+        open={openDeleteDialog}
+        variant="delete"
+        title="Excluir transação"
+        highlight={editingTransaction?.title}
+        onCancel={() => {
+          setOpenDeleteDialog(false);
+          setEditingTransaction(null);
+        }}
+        onConfirm={() => {
+          handleDeleteTransaction(editingTransaction!);
+          setOpenDeleteDialog(false);
+          setEditingTransaction(null);
+        }}
       />
     </Stack>
   );

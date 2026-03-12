@@ -109,7 +109,7 @@ export default function TopBar() {
                     transform: "translateY(-3px)",
                   },
                 }}
-                icon={<LightMode fontSize="small" color="warning" />}
+                icon={<LightMode fontSize="small" sx={{color: "yellow"}} />}
                 checkedIcon={<DarkMode fontSize="small" sx={{color: "white"}} />}
               />
             </span>

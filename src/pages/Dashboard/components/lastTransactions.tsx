@@ -16,10 +16,11 @@ export function LastTransactions(props: {
   editData: (data: iTransaction) => void;
   onPageChange: (page: number) => void;
   onLimitChange?: (limit: number) => void;
+  deleteData: (id: iTransaction) => void;
 }) {
   return (
     <BaseCard
-      cardTitle="Últimas transações"
+      cardTitle="Últimos lançamentos"
       contentStyle={{ gap: 1, maxHeight: "50dvh" }}
       cardTitleAction
       cardTitleBtnText="Novo Lançamento"
@@ -93,7 +94,7 @@ export function LastTransactions(props: {
                   <BaseButton
                     isIconBtn
                     icon={<Delete fontSize="small" color="error" />}
-                    onClick={() => console.log(item)}
+                    onClick={() => props.deleteData(item)}
                   />
                 </BaseTooltip>
               </Stack>

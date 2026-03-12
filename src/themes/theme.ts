@@ -57,7 +57,9 @@ const lightPalette = {
   divider: "#DAD6DF",
 
   info: {
-    main: primaryColor[400], // primary 400
+    main: "#0EA5E9", // azul-ciano
+    light: "#38BDF8",
+    dark: "#0369A1",
     contrastText: "#FFFFFF",
   },
 
@@ -75,6 +77,13 @@ const lightPalette = {
 
   error: {
     main: "#E75858",
+    contrastText: "#FFFFFF",
+  },
+
+  neutral: {
+    main: "#9E9E9E",
+    light: "#CFCFCF",
+    dark: "#707070",
     contrastText: "#FFFFFF",
   },
 };
@@ -109,7 +118,9 @@ const darkPalette = {
   divider: "#3A3342",
 
   info: {
-    main: primaryColor[200], // primary 200
+    main: "#38BDF8",
+    light: "#60E0FF",
+    dark: "#0EA5E9",
     contrastText: "#231F20",
   },
 
@@ -128,6 +139,13 @@ const darkPalette = {
   error: {
     main: "#B03A3A",
     contrastText: "#FFFFFF",
+  },
+
+  neutral: {
+    main: "#9E9E9E",
+    light: "#CFCFCF",
+    dark: "#707070",
+    contrastText: "#231F20",
   },
 };
 
@@ -163,6 +181,25 @@ declare module "@mui/material/styles" {
 
   interface ThemeOptions {
     custom?: Theme["custom"];
+  }
+
+  interface Palette {
+    neutral: Palette["primary"];
+  }
+
+  interface PaletteOptions {
+    neutral?: PaletteOptions["primary"];
+  }
+}
+
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    neutral: true;
+  }
+}
+declare module "@mui/material/IconButton" {
+  interface IconButtonPropsColorOverrides {
+    neutral: true;
   }
 }
 

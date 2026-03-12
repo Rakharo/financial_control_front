@@ -26,7 +26,8 @@ export default function BaseDialog(props: {
     | "error"
     | "info"
     | "success"
-    | "warning";
+    | "warning"
+    | "neutral";
   secondBtnText?: string;
   secondBtnType?: "button" | "submit" | "reset";
   secondBtnVariant?: "contained" | "outlined" | "text";
@@ -36,7 +37,8 @@ export default function BaseDialog(props: {
     | "error"
     | "info"
     | "success"
-    | "warning";
+    | "warning"
+    | "neutral";
   width?: "xs" | "sm" | "md" | "lg" | "xl";
   sx?: React.CSSProperties;
   noColorHeader?: boolean;

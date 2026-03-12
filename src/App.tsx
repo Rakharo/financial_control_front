@@ -6,6 +6,7 @@ import { ThemeProviderCustom, useThemeMode } from "./contexts/ThemeContext";
 import getTheme from "./themes/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import { AlertProvider } from "./contexts/AlertContext";
 
 function App() {
   function AppContent() {
@@ -16,15 +17,17 @@ function App() {
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Routes>
-            {/* rota pública */}
-            <Route path="/" element={<Login />} />
+          <AlertProvider>
+            <Routes>
+              {/* rota pública */}
+              <Route path="/" element={<Login />} />
 
-            {/* rotas protegidas */}
-            <Route element={<AppLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Route>
-          </Routes>
+              {/* rotas protegidas */}
+              <Route element={<AppLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Route>
+            </Routes>
+          </AlertProvider>
         </ThemeProvider>
       </BrowserRouter>
     );
