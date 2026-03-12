@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
@@ -9,13 +10,18 @@ import {
   TableRow,
   Paper,
   TableSortLabel,
-  Pagination,
   Stack,
+  Typography,
+  Select,
+  MenuItem,
+  IconButton,
+  Pagination,
 } from "@mui/material";
+import { FirstPage, LastPage } from "@mui/icons-material";
 
 type SortDirection = "asc" | "desc";
 
-type BaseTableColumn<T> = {
+export type BaseTableColumn<T> = {
   title: string;
   key?: keyof T;
   render?: (item: T) => React.ReactNode;
@@ -25,14 +31,15 @@ type BaseTableColumn<T> = {
   align?: "left" | "center" | "right";
 };
 
-type BaseTablePagination = {
+export type BaseTablePagination = {
   page: number;
   limit: number;
   total: number;
   onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
 };
 
-type BaseTableProps<T> = {
+export type BaseTableProps<T> = {
   data: T[];
   columns: BaseTableColumn<T>[];
   pagination?: BaseTablePagination;
@@ -45,6 +52,7 @@ export default function BaseTable<T>({
 }: BaseTableProps<T>) {
   const visibleColumns = columns.filter((col) => col.visible !== false);
 
+  // --- Estado de ordenação ---
   const [orderBy, setOrderBy] = React.useState<keyof T | null>(null);
   const [order, setOrder] = React.useState<SortDirection>("asc");
 
@@ -62,7 +70,7 @@ export default function BaseTable<T>({
       }
 
       return order === "asc"
-        ? String(aValue).localeCompare(String(aValue))
+        ? String(aValue).localeCompare(String(bValue))
         : String(bValue).localeCompare(String(aValue));
     });
   }, [data, orderBy, order]);
@@ -134,8 +142,8 @@ export default function BaseTable<T>({
                       {col.render
                         ? col.render(item)
                         : col.key
-                        ? (item as any)[col.key]
-                        : null}
+                          ? (item as any)[col.key]
+                          : null}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -145,15 +153,70 @@ export default function BaseTable<T>({
         </Table>
       </TableContainer>
 
+      {/* --- Paginação Melhorada --- */}
       {pagination && totalPages > 1 && (
-        <Stack alignItems="center" sx={{ mt: 2 }}>
-          <Pagination
-            page={pagination.page}
-            count={totalPages}
-            onChange={(_, value) => pagination.onPageChange(value)}
-            size="small"
-            color="primary"
-          />
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          justifyContent="space-between"
+          sx={{ mt: 2, padding: "0 16px" }}
+        >
+          {/* Seleção de itens por página */}
+          {pagination.onLimitChange && (
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="body2">Itens por página:</Typography>
+              <Select
+                size="small"
+                value={pagination.limit}
+                onChange={(e) => {
+                  pagination.onLimitChange &&
+                    pagination.onLimitChange(Number(e.target.value));
+                  pagination.onPageChange(1); // resetar página ao mudar limite
+                }}
+              >
+                {[5, 10, 20, 50].map((val) => (
+                  <MenuItem key={val} value={val}>
+                    {val}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+          )}
+
+          {/* Navegação de páginas */}
+          <Stack direction="row" alignItems="center" spacing={0.5}>
+            <IconButton
+              size="small"
+              onClick={() => pagination.onPageChange(1)}
+              disabled={pagination.page === 1}
+            >
+              <FirstPage />
+            </IconButton>
+
+            <Pagination
+              page={pagination.page}
+              count={totalPages}
+              onChange={(_, value) => pagination.onPageChange(value)}
+              size="small"
+              color="primary"
+              siblingCount={1}
+              boundaryCount={1}
+            />
+
+            <IconButton
+              size="small"
+              onClick={() => pagination.onPageChange(totalPages)}
+              disabled={pagination.page === totalPages}
+            >
+              <LastPage />
+            </IconButton>
+          </Stack>
+
+          {/* Informações de página */}
+          <Typography variant="body2">
+            Página {pagination.page} de {totalPages} ({pagination.total} itens)
+          </Typography>
         </Stack>
       )}
     </>

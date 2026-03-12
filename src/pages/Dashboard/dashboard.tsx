@@ -30,7 +30,7 @@ export default function Dashboard() {
   const [editingCategory, setEditingCategory] =
     useState<iCategoryResponse | null>(null);
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(10);
 
   const [filterDate, setFilterDate] = useState<Dayjs | null>(dayjs());
 
@@ -104,9 +104,11 @@ export default function Dashboard() {
               setEditingTransaction(data);
               setOpenTransaction(true);
             }}
-            page={transactionData?.page || 1}
-            totalPages={transactionData?.total || 1}
+            page={page || 1}
+            limit={limit || 10}
+            onLimitChange={(value) => setLimit(value)}
             onPageChange={(value) => setPage(value)}
+            totalPages={transactionData?.total || 0}
           />
         </Grid>
 

@@ -10,10 +10,12 @@ import { Chip, Stack, Divider } from "@mui/material";
 export function LastTransactions(props: {
   data: iTransaction[];
   page: number;
+  limit: number;
   totalPages: number;
   openDialog: () => void;
   editData: (data: iTransaction) => void;
   onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
 }) {
   return (
     <BaseCard
@@ -28,9 +30,10 @@ export function LastTransactions(props: {
         data={props.data}
         pagination={{
           page: props.page,
-          limit: 10,
+          limit: props.limit,
           total: props.totalPages,
           onPageChange: props.onPageChange,
+          onLimitChange: props.onLimitChange,
         }}
         columns={[
           { title: "Nome", key: "title" },
