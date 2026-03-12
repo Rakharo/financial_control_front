@@ -16,7 +16,7 @@ export function LastTransactions(props: {
   editData: (data: iTransaction) => void;
   onPageChange: (page: number) => void;
   onLimitChange?: (limit: number) => void;
-  deleteData: (id: iTransaction) => void;
+  deleteData: (data: iTransaction) => void;
 }) {
   return (
     <BaseCard

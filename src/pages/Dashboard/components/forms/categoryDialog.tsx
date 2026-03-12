@@ -57,7 +57,7 @@ export default function CategoryDialog(props: Props) {
           : "Preencha os dados para registrar uma nova categoria."
       }
       firstBtnText="Cancelar"
-      firstBtnColor="info"
+      firstBtnColor="neutral"
       firstBtnVariant="text"
       secondBtnText={props.isEdit ? "Salvar" : "Criar"}
       secondBtnColor="primary"

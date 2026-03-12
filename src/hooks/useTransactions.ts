@@ -63,7 +63,7 @@ export function useCreateTransaction() {
 
       showAlert({
         title: "Sucesso!",
-        description: `"Transação ${variables.data.title} criada com sucesso!"`,
+        description: `Transação '${variables.data.title}' criada com sucesso!`,
         severity: "success",
       });
     },
@@ -93,7 +93,7 @@ export function useUpdateTransaction() {
 
       showAlert({
         title: "Sucesso!",
-        description: `"Transação ${variables.data.title} editada com sucesso!"`,
+        description: `Transação '${variables.data.title}' editada com sucesso!`,
         severity: "success",
       });
     },
@@ -122,7 +122,7 @@ export function useDeleteTransaction() {
 
       showAlert({
         title: "Sucesso!",
-        description: `"Transação ${variables.data.title} deletada com sucesso!"`,
+        description: `Transação '${variables.data.title}' deletada com sucesso!`,
         severity: "success",
       });
     },

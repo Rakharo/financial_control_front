@@ -6,12 +6,22 @@ import {
   getCategoryById,
   updateCategory,
 } from "../services/CategoryService";
-import type { iCategoryRequest } from "../interfaces/CategoryInterface";
+import type {
+  iCategory,
+  iCategoryRequest,
+} from "../interfaces/CategoryInterface";
+import { useAlert } from "../contexts/AlertContext";
 
-export function useCategoryList() {
+export function useCategoryList({
+  page,
+  limit,
+}: {
+  page?: number;
+  limit?: number;
+}) {
   return useQuery({
-    queryKey: ["categories"],
-    queryFn: () => getCategoriesList(),
+    queryKey: ["categories", page, limit],
+    queryFn: () => getCategoriesList(page, limit),
     refetchOnWindowFocus: false,
     retry: 1,
   });
@@ -28,11 +38,25 @@ export function useCategoryById(id: number) {
 
 export function useCreateCategory() {
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   return useMutation({
-    mutationFn: (data: iCategoryRequest) => createCategory(data),
-    onSuccess: () => {
+    mutationFn: ({data}:{data: iCategoryRequest}) => createCategory(data),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
+      });
+
+      showAlert({
+        title: "Sucesso!",
+        description: `Categoria '${variables.data.name}' criada com sucesso!`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao criar categoria!",
+        severity: "error",
       });
     },
   });
@@ -40,19 +64,54 @@ export function useCreateCategory() {
 
 export function useUpdateCategory() {
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: iCategoryRequest }) =>
       updateCategory(id, data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
+      });
+
+      showAlert({
+        title: "Sucesso!",
+        description: `Categoria '${variables.data.name}' editada com sucesso!`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao editar categoria!",
+        severity: "error",
       });
     },
   });
 }
 
 export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   return useMutation({
-    mutationFn: (id: number) => deleteCategory(id),
+    mutationFn: ({ data }: { data: iCategory }) => deleteCategory(data.id),
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+
+      showAlert({
+        title: "Sucesso!",
+        description: `Categoria '${variables.data.name}' deletada com sucesso!`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao deletar categoria!",
+        severity: "error",
+      });
+    },
   });
 }

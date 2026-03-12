@@ -4,7 +4,7 @@ import { Controller, useForm, type DefaultValues } from "react-hook-form";
 import BaseDialog from "../../../../components/global/BaseDialog";
 import BaseForm from "../../../../components/global/BaseForm";
 import BaseInput from "../../../../components/global/BaseInput";
-import type { iCategoryResponse } from "../../../../interfaces/CategoryInterface";
+import type { iCategory } from "../../../../interfaces/CategoryInterface";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
 import {
@@ -18,7 +18,7 @@ import BaseNumberInput from "../../../../components/global/BaseNumberInput";
 export default function TransactionDialog(props: {
   open: boolean;
   isEdit?: boolean;
-  categoriesList: iCategoryResponse[];
+  categoriesList: iCategory[];
   initialData?: any;
   onClose: (open: boolean) => void;
   onSubmit: (data: any) => Promise<void> | void;

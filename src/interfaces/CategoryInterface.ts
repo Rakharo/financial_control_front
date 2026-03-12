@@ -3,11 +3,17 @@ export interface iCategoryRequest {
     type: string;
 }
 
-export interface iCategoryResponse {
+export interface iCategory {
     id: number;
     user_id: number | null;
     name: string;
     type: string;
     created_at?: string;
     updated_at?: string;
+}
+
+export interface iCategoryResponse {
+    categories: iCategory[];
+    page: number;
+    total: number;
 }

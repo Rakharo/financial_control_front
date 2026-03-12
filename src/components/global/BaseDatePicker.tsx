@@ -2,6 +2,7 @@ import { FormControl } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import 'dayjs/locale/pt-br';
 import { Dayjs } from "dayjs";
 
 export default function BaseDatePicker(props: {
@@ -30,7 +31,7 @@ export default function BaseDatePicker(props: {
           minDate={props.minDate}
           maxDate={props.maxDate}
           disabled={props.disabled}
-          views={props.views || ["year", "month", "day"]}
+          views={props.views || ["day", "month", "year"]}
           sx={(theme) => ({
             backgroundColor: theme.custom.input,
             borderColor: theme.custom.border,

@@ -6,6 +6,7 @@ import UserCategories from "./components/userCategories";
 import {
   useCategoryList,
   useCreateCategory,
+  useDeleteCategory,
   useUpdateCategory,
 } from "../../hooks/useCategory";
 import {
@@ -19,7 +20,7 @@ import { useState } from "react";
 import TransactionDialog from "./components/forms/transactionDialog";
 import CategoryDialog from "./components/forms/categoryDialog";
 import type { iTransaction } from "../../interfaces/TransactionInterface";
-import type { iCategoryResponse } from "../../interfaces/CategoryInterface";
+import type { iCategory } from "../../interfaces/CategoryInterface";
 import dayjs, { Dayjs } from "dayjs";
 import BaseDatePicker from "../../components/global/BaseDatePicker";
 import ConfirmationDialog from "../../components/alert/ConfirmationDialog";
@@ -31,9 +32,11 @@ export default function Dashboard() {
     useState<iTransaction | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [editingCategory, setEditingCategory] =
-    useState<iCategoryResponse | null>(null);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+    useState<iCategory | null>(null);
+  const [transactionPage, setTransactionPage] = useState(1);
+  const [transactionLimit, setTransactionLimit] = useState(10);
+  const [categoriesPage, setCategoriesPage] = useState(1);
+  const [categoriesLimit, setCategoriesLimit] = useState(10);
 
   const [filterDate, setFilterDate] = useState<Dayjs | null>(dayjs());
 
@@ -43,22 +46,26 @@ export default function Dashboard() {
   });
   const { data: transactionData, isLoading: transactionLoading } =
     useTransactionsList({
-      page,
-      limit,
+      page: transactionPage,
+      limit: transactionLimit,
       month: filterDate ? filterDate.month() + 1 : undefined,
       year: filterDate ? filterDate.year() : undefined,
     });
-  const { data: categoryData, isLoading: categoryLoading } = useCategoryList();
+  const { data: categoryData, isLoading: categoryLoading } = useCategoryList({
+    page: categoriesPage,
+    limit: categoriesLimit,
+  });
 
   const createTransaction = useCreateTransaction();
   const updateTransaction = useUpdateTransaction();
   const deleteTransaction = useDeleteTransaction();
   const createCategory = useCreateCategory();
   const updatedCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory()
 
   function handleSubmitTransaction(data: any) {
     if (!editingTransaction) {
-      createTransaction.mutate({data: data});
+      createTransaction.mutate({ data: data });
     } else {
       updateTransaction.mutate({
         id: editingTransaction.id,
@@ -81,7 +88,11 @@ export default function Dashboard() {
   };
 
   function handleDeleteTransaction(transaction: iTransaction) {
-    deleteTransaction.mutate({data: transaction});
+    deleteTransaction.mutate({ data: transaction });
+  }
+
+  function handleDeleteCategory(category: iCategory) {
+    deleteCategory.mutate({ data: category });
   }
 
   if (summaryLoading && transactionLoading && categoryLoading) {
@@ -98,7 +109,7 @@ export default function Dashboard() {
           value={filterDate}
           onChange={setFilterDate}
           format="MM/YYYY"
-          views={["year", "month"]}
+          views={["month", "year"]}
           size="small"
         />
       </Stack>
@@ -116,21 +127,30 @@ export default function Dashboard() {
               setEditingTransaction(data);
               setOpenDeleteDialog(true);
             }}
-            page={page || 1}
-            limit={limit || 10}
-            onLimitChange={(value) => setLimit(value)}
-            onPageChange={(value) => setPage(value)}
+            page={transactionPage || 1}
+            limit={transactionLimit || 10}
+            onLimitChange={(value) => setTransactionLimit(value)}
+            onPageChange={(value) => setTransactionPage(value)}
             totalPages={transactionData?.total || 0}
           />
         </Grid>
 
         <Grid size={{ xs: 12, md: 5 }}>
           <UserCategories
-            data={categoryData || []}
+            data={categoryData?.categories || []}
+            page={categoriesPage || 1}
+            limit={categoriesLimit || 10}
+            totalPages={categoryData?.total || 0}
+            onLimitChange={(value) => setCategoriesLimit(value)}
+            onPageChange={(value) => setCategoriesPage(value)}
             openDialog={() => setOpenCategory(true)}
-            editData={(data: iCategoryResponse) => {
+            editData={(data: iCategory) => {
               setEditingCategory(data);
               setOpenCategory(true);
+            }}
+            deleteData={(data: iCategory) => {
+              setEditingCategory(data)
+              setOpenDeleteDialog(true)
             }}
           />
         </Grid>
@@ -143,7 +163,7 @@ export default function Dashboard() {
           setEditingTransaction(null);
         }}
         onSubmit={handleSubmitTransaction}
-        categoriesList={categoryData || []}
+        categoriesList={categoryData?.categories || []}
         initialData={
           editingTransaction
             ? {
@@ -175,16 +195,25 @@ export default function Dashboard() {
       <ConfirmationDialog
         open={openDeleteDialog}
         variant="delete"
-        title="Excluir transação"
-        highlight={editingTransaction?.title}
+        title={editingTransaction ? "Deletar transação" : "Deletar categoria"}
+        highlight={editingTransaction ? editingTransaction?.title : editingCategory?.name}
         onCancel={() => {
           setOpenDeleteDialog(false);
-          setEditingTransaction(null);
+          if(editingTransaction) {
+            setEditingTransaction(null);
+          } else {
+            setEditingCategory(null);
+          }
         }}
         onConfirm={() => {
-          handleDeleteTransaction(editingTransaction!);
+          if (editingTransaction) {
+            handleDeleteTransaction(editingTransaction!);
+            setEditingTransaction(null);
+          } else {
+            handleDeleteCategory(editingCategory!);
+            setEditingCategory(null);
+          }
           setOpenDeleteDialog(false);
-          setEditingTransaction(null);
         }}
       />
     </Stack>

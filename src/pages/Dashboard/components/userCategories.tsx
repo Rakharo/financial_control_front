@@ -5,17 +5,24 @@ import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
 import BaseTooltip from "../../../components/global/BaseTooltip";
 import { formatDateBR } from "../../../utils/formatter";
-import type { iCategoryResponse } from "../../../interfaces/CategoryInterface";
+import type { iCategory } from "../../../interfaces/CategoryInterface";
 
 export default function UserCategories(props: {
-  data: iCategoryResponse[];
+  data: iCategory[];
+  page: number;
+  limit: number;
+  totalPages: number;
   openDialog: () => void;
-  editData: (data: iCategoryResponse) => void;
+  editData: (data: iCategory) => void;
+  onPageChange: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
+  deleteData: (data: iCategory) => void;
+
 }) {
   return (
     <BaseCard
       cardTitle="Minhas Categorias"
-      contentStyle={{ gap: 1, maxHeight: "50dvh", overflow: "auto"}}
+      contentStyle={{ gap: 1, maxHeight: "50dvh", overflow: "auto" }}
       cardTitleAction
       cardTitleBtnText="Nova Categoria"
       cardTitleBtnIcon={<Add fontSize="small" />}
@@ -23,6 +30,13 @@ export default function UserCategories(props: {
     >
       <BaseTable
         data={props.data}
+        pagination={{
+          page: props.page,
+          limit: props.limit,
+          total: props.totalPages,
+          onPageChange: props.onPageChange,
+          onLimitChange: props.onLimitChange,
+        }}
         columns={[
           {
             title: "Nome",
@@ -51,18 +65,25 @@ export default function UserCategories(props: {
             align: "center",
             sortable: true,
             key: "user_id",
-            render: (item) => item.user_id === 0 ? (
-              <Chip label="Sistema" color="default" sx={{ width: "100%" }} />
-            ) : (
-              <Chip label="Usuário" color="secondary" sx={{ width: "100%" }} />
-            ), 
+            render: (item) =>
+              item.user_id === 0 ? (
+                <Chip label="Sistema" color="default" sx={{ width: "100%" }} />
+              ) : (
+                <Chip
+                  label="Usuário"
+                  color="secondary"
+                  sx={{ width: "100%" }}
+                />
+              ),
           },
           {
             title: "Ações",
             align: "center",
             render: (item) => (
               <>
-                {item.user_id === 0 ? '-' : (
+                {item.user_id === 0 ? (
+                  "-"
+                ) : (
                   <Stack
                     justifyContent="center"
                     direction="row"
@@ -79,7 +100,7 @@ export default function UserCategories(props: {
                       <BaseButton
                         isIconBtn
                         icon={<Delete fontSize="small" color="error" />}
-                        onClick={() => console.log(item)}
+                        onClick={() => props.deleteData(item)}
                       />
                     </BaseTooltip>
                   </Stack>
