@@ -47,7 +47,7 @@ export default function UserCategories(props: {
             title: "Criada em",
             align: "center",
             key: "created_at",
-            render: (item) => formatDateBR(item.created_at!),
+            render: (item) => item.user_id === 0 ? "-" : formatDateBR(item.created_at!),
           },
           {
             title: "Tipo",

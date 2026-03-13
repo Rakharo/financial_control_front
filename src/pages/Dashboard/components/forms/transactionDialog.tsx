@@ -14,6 +14,7 @@ import {
 import BaseSelect from "../../../../components/global/BaseSelect";
 import { useEffect } from "react";
 import BaseNumberInput from "../../../../components/global/BaseNumberInput";
+import BaseDatePicker from "../../../../components/global/BaseDatePicker";
 
 export default function TransactionDialog(props: {
   open: boolean;
@@ -26,6 +27,8 @@ export default function TransactionDialog(props: {
   const defaultValues: DefaultValues<TransactionFormData> = {
     title: "",
     amount: "",
+    installment_total: 1,
+    transaction_date: null,
     category_id: "",
     type: "",
     frequency: "",
@@ -45,6 +48,21 @@ export default function TransactionDialog(props: {
   const frequencyList = [
     { value: "fixed", label: "Fixo" },
     { value: "variable", label: "Variado" },
+  ];
+
+  const installmentList = [
+    { value: 1, label: "À vista" },
+    { value: 2, label: "2x" },
+    { value: 3, label: "3x" },
+    { value: 4, label: "4x" },
+    { value: 5, label: "5x" },
+    { value: 6, label: "6x" },
+    { value: 7, label: "7x" },
+    { value: 8, label: "8x" },
+    { value: 9, label: "9x" },
+    { value: 10, label: "10x" },
+    { value: 11, label: "11x" },
+    { value: 12, label: "12x" },
   ];
 
   useEffect(() => {
@@ -106,6 +124,39 @@ export default function TransactionDialog(props: {
               />
             )}
           />
+          <Controller
+            name="installment_total"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <BaseSelect
+                label="Parcelas"
+                value={field.value ?? ""}
+                options={installmentList}
+                onChange={(value) => field.onChange(value)}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+                getOptionLabel={(option) => option.label}
+                getOptionValue={(option) => option.value}
+              />
+            )}
+          />
+
+          <Controller
+            name="transaction_date"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <BaseDatePicker
+                label="Data de lançamento"
+                value={field.value || null}
+                onChange={(value) => field.onChange(value)}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+                required
+                width="100%"
+              />
+            )}
+          />
+
           <Controller
             name="category_id"
             control={form.control}

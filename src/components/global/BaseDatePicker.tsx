@@ -19,6 +19,7 @@ export default function BaseDatePicker(props: {
   format?: string; // Ex: "DD/MM/YYYY"
   required?: boolean;
   views?: ("year" | "month" | "day")[];
+  width?: string;
 }) {
   return (
     <FormControl fullWidth error={props.error} size={props.size}>
@@ -51,7 +52,7 @@ export default function BaseDatePicker(props: {
               fullWidth: true,
               required: props.required,
               color: props.error ? "error" : "primary",
-              sx: { width: 220 },
+              sx: { width: props.width || 220 },
             },
           }}
         />

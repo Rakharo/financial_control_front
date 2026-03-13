@@ -31,8 +31,9 @@ export default function Dashboard() {
   const [editingTransaction, setEditingTransaction] =
     useState<iTransaction | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [editingCategory, setEditingCategory] =
-    useState<iCategory | null>(null);
+  const [editingCategory, setEditingCategory] = useState<iCategory | null>(
+    null,
+  );
   const [transactionPage, setTransactionPage] = useState(1);
   const [transactionLimit, setTransactionLimit] = useState(10);
   const [categoriesPage, setCategoriesPage] = useState(1);
@@ -61,18 +62,29 @@ export default function Dashboard() {
   const deleteTransaction = useDeleteTransaction();
   const createCategory = useCreateCategory();
   const updatedCategory = useUpdateCategory();
-  const deleteCategory = useDeleteCategory()
+  const deleteCategory = useDeleteCategory();
 
   function handleSubmitTransaction(data: any) {
     if (!editingTransaction) {
-      createTransaction.mutate({ data: data });
+      createTransaction.mutate(
+        { data: data },
+        {
+          onSuccess: () => {
+            setOpenTransaction(false);
+            setTransactionPage(1);
+          },
+        },
+      );
     } else {
       updateTransaction.mutate({
         id: editingTransaction.id,
         data: data,
-      });
+      }, {onSuccess: () => {
+        setOpenTransaction(false);
+        setTransactionPage(1);
+        setEditingTransaction(null);
+      }});
     }
-    setOpenTransaction(false);
   }
 
   const handleCreateCategory = (data: any) => {
@@ -149,8 +161,8 @@ export default function Dashboard() {
               setOpenCategory(true);
             }}
             deleteData={(data: iCategory) => {
-              setEditingCategory(data)
-              setOpenDeleteDialog(true)
+              setEditingCategory(data);
+              setOpenDeleteDialog(true);
             }}
           />
         </Grid>
@@ -196,10 +208,12 @@ export default function Dashboard() {
         open={openDeleteDialog}
         variant="delete"
         title={editingTransaction ? "Deletar transação" : "Deletar categoria"}
-        highlight={editingTransaction ? editingTransaction?.title : editingCategory?.name}
+        highlight={
+          editingTransaction ? editingTransaction?.title : editingCategory?.name
+        }
         onCancel={() => {
           setOpenDeleteDialog(false);
-          if(editingTransaction) {
+          if (editingTransaction) {
             setEditingTransaction(null);
           } else {
             setEditingCategory(null);

@@ -45,6 +45,24 @@ export function LastTransactions(props: {
             render: (item) => `R$ ${item.amount.toFixed(2)}`,
           },
           {
+            title: "Parcelas",
+            align: "center",
+            key: "installment_number",
+            render: (item) =>
+              item.installment_plan_id
+                ? `${item?.installment_number}/${item?.installment_total}`
+                : "-",
+          },
+          {
+            title: "Valor Parcela",
+            align: "center",
+            key: "installment_value",
+            render: (item) =>
+              item.installment_plan_id
+                ? `R$ ${item?.installment_value?.toFixed(2)}`
+                : "-",
+          },
+          {
             title: "Categoria",
             align: "center",
             key: "category",
@@ -55,6 +73,12 @@ export function LastTransactions(props: {
             align: "center",
             key: "created_at",
             render: (item) => formatDateBR(item.created_at),
+          },
+          {
+            title: "Data de lançamento",
+            align: "center",
+            key: "transaction_date",
+            render: (item) => formatDateBR(item.transaction_date),
           },
           {
             title: "Tipo",
