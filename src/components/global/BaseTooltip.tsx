@@ -27,7 +27,7 @@ export default function BaseTooltip(props: {
       slotProps={{
         tooltip: {
           sx: {
-            backgroundColor: "primary.light",
+            backgroundColor: "primary.dark",
             color: "#fff",
             fontSize: props.fontsize,
           },

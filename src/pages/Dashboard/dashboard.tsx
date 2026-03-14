@@ -181,6 +181,8 @@ export default function Dashboard() {
             ? {
                 ...editingTransaction,
                 category_id: editingTransaction.category.id,
+                transaction_date: dayjs(editingTransaction.transaction_date),
+                installment_plan_id: editingTransaction.installment_plan_id,
               }
             : null
         }

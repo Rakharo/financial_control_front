@@ -2,16 +2,16 @@
 import { createTheme, type ThemeOptions } from "@mui/material/styles";
 
 const primaryColor = {
-  50: "#ecfdf5",
-  100: "#d1fae5",
-  200: "#a7f3d0",
-  300: "#6ee7b7",
-  400: "#34d399",
-  500: "#10b981",
-  600: "#059669",
-  700: "#047857",
-  800: "#065f46",
-  900: "#064e3b",
+  50: "#31CB00",
+  100: "#119822",
+  200: "#188F22 ",
+  300: "#1E8522",
+  400: "#247C22",
+  500: "#277722",
+  600: "#2A7221",
+  700: "#245B20",
+  800: "#1E441E",
+  900: "#152614",
 };
 
 const secondaryColor = {
@@ -90,16 +90,16 @@ const lightPalette = {
 
 const darkPalette = {
   primary: {
-    main: primaryColor[300],
-    light: primaryColor[200],
-    dark: primaryColor[500],
+    main: primaryColor[500],
+    light: primaryColor[300],
+    dark: primaryColor[700],
     contrastText: "#ffffff",
   },
 
   secondary: {
-    main: secondaryColor[200],
-    light: secondaryColor[100],
-    dark: secondaryColor[400],
+    main: secondaryColor[500],
+    light: secondaryColor[300],
+    dark: secondaryColor[700],
     contrastText: "#231F20",
   },
 

@@ -16,6 +16,7 @@ import {
   MenuItem,
   IconButton,
   Pagination,
+  Checkbox,
 } from "@mui/material";
 import { FirstPage, LastPage } from "@mui/icons-material";
 import { useThemeMode } from "../../contexts/ThemeContext";
@@ -44,20 +45,55 @@ export type BaseTableProps<T> = {
   data: T[];
   columns: BaseTableColumn<T>[];
   pagination?: BaseTablePagination;
+  selectable?: boolean;
+  selectionMode?: "single" | "multiple";
+  getRow?: (row: T) => any;
+  // onDeleteSelected?: (data: any | any[]) => void;
+  // renderBulkActions?: (selectedIds: any | any[]) => React.ReactNode;
+  renderBulkActions?: (
+    selectedIds: any | any[],
+    clearSelection: () => void,
+  ) => React.ReactNode;
 };
 
 export default function BaseTable<T>({
   data,
   columns,
   pagination,
+  selectable = false,
+  selectionMode,
+  getRow,
+  renderBulkActions,
 }: BaseTableProps<T>) {
   const visibleColumns = columns.filter((col) => col.visible !== false);
+  const [selected, setSelected] = React.useState<(string | number)[]>([]);
 
   // --- Estado de ordenação ---
   const [orderBy, setOrderBy] = React.useState<keyof T | null>(null);
   const [order, setOrder] = React.useState<SortDirection>("asc");
 
   const { mode } = useThemeMode();
+
+  const handleSelect = (id: string | number) => {
+    if (selectionMode === "single") {
+      setSelected((prev) => (prev.includes(id) ? [] : [id]));
+      return;
+    }
+
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (!checked) {
+      setSelected([]);
+      return;
+    }
+
+    const ids = data.map((row) => getRow?.(row));
+    setSelected(ids as (string | number)[]);
+  };
 
   const sortedData = React.useMemo(() => {
     if (!orderBy) return data;
@@ -93,10 +129,69 @@ export default function BaseTable<T>({
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer
+        component={Paper}
+        sx={{
+          position: "relative",
+        }}
+      >
+        {selectable && selected.length > 0 && (
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{
+              p: 2,
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+              position: "sticky",
+              top: 0,
+              zIndex: 2,
+            }}
+          >
+            {selectionMode === "single" ? (
+              <Typography>Item selecionado</Typography>
+            ) : (
+              <Typography>{selected.length} itens selecionados</Typography>
+            )}
+
+            {renderBulkActions?.(selected, () => setSelected([]))}
+          </Stack>
+        )}
+        <Table
+          stickyHeader
+          sx={{
+            "& .MuiTableCell-stickyHeader": {
+              top: selectable && selected.length > 0 ? "56px" : 0,
+            },
+          }}
+        >
           <TableHead>
             <TableRow>
+              {selectable && (
+                <TableCell
+                  padding="checkbox"
+                  sx={{
+                    backgroundColor: "primary.main",
+                    color: "primary.contrastText",
+                    fontWeight: 600,
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  {selectionMode === "multiple" && (
+                    <Checkbox
+                      indeterminate={
+                        selected.length > 0 && selected.length < data.length
+                      }
+                      checked={
+                        data.length > 0 && selected.length === data.length
+                      }
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                    />
+                  )}
+                </TableCell>
+              )}
               {visibleColumns.map((col) => {
                 const sortKey = col.sortKey ?? col.key;
                 const isSortable = col.sortable && sortKey;
@@ -141,12 +236,31 @@ export default function BaseTable<T>({
               sortedData.map((item, idx) => (
                 <TableRow
                   key={idx}
+                  onClick={() => handleSelect(getRow?.(item) || "")}
                   sx={{
+                    cursor: "pointer",
+                    backgroundColor: selected.includes(getRow?.(item) || "")
+                      ? "action.selected"
+                      : undefined,
                     "&:hover": {
-                      backgroundColor: mode === 'light' ? '#ecfdf5' : '#10b981', //light=primary[50] & dark=primary[500] 
+                      backgroundColor: mode === "light" ? "#ecfdf5" : "#1E441E",
                     },
                   }}
                 >
+                  {selectable && (
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={selected.includes(getRow?.(item) || "")}
+                        onChange={() => handleSelect(getRow?.(item) || "")}
+                        sx={{
+                          color: "primary.light",
+                          "&.Mui-checked": {
+                            color: "primary.light",
+                          },
+                        }}
+                      />
+                    </TableCell>
+                  )}
                   {visibleColumns.map((col, colIdx) => (
                     <TableCell key={colIdx} align={col.align ?? "left"}>
                       {col.render
@@ -170,7 +284,7 @@ export default function BaseTable<T>({
           alignItems="center"
           spacing={2}
           justifyContent="space-between"
-          sx={{ mt: 2, padding: "0 16px" }}
+          sx={{ mt: 2 }}
         >
           {/* Seleção de itens por página */}
           {pagination.onLimitChange && (

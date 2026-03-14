@@ -1,11 +1,12 @@
-import { Add, EditOutlined, Delete } from "@mui/icons-material";
+import { Add, Delete, Edit } from "@mui/icons-material";
 import BaseButton from "../../../components/global/BaseButton";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
 import BaseTooltip from "../../../components/global/BaseTooltip";
 import { formatDateBR } from "../../../utils/formatter";
 import type { iTransaction } from "../../../interfaces/TransactionInterface";
-import { Chip, Stack, Divider } from "@mui/material";
+import { Chip, Stack, Typography } from "@mui/material";
+import { useThemeMode } from "../../../contexts/ThemeContext";
 
 export function LastTransactions(props: {
   data: iTransaction[];
@@ -18,6 +19,8 @@ export function LastTransactions(props: {
   onLimitChange?: (limit: number) => void;
   deleteData: (data: iTransaction) => void;
 }) {
+  const { mode } = useThemeMode();
+
   return (
     <BaseCard
       cardTitle="Últimos lançamentos"
@@ -29,6 +32,37 @@ export function LastTransactions(props: {
     >
       <BaseTable
         data={props.data}
+        selectable
+        selectionMode="single"
+        getRow={(row) => row}
+        renderBulkActions={(selected) => (
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              backgroundColor:
+                mode === "dark" ? "primary.dark" : "rgba(255, 255, 255, 0.7)",
+              borderRadius: "1rem",
+            }}
+          >
+            <BaseTooltip content="Editar" arrow placement="left">
+              <BaseButton
+                isIconBtn
+                icon={<Edit />}
+                color="secondary"
+                onClick={() => props.editData(selected[0])}
+              />
+            </BaseTooltip>
+            <BaseTooltip content="Deletar" arrow placement="right">
+              <BaseButton
+                isIconBtn
+                icon={<Delete />}
+                color="error"
+                onClick={() => props.deleteData(selected[0])}
+              />
+            </BaseTooltip>
+          </Stack>
+        )}
         pagination={{
           page: props.page,
           limit: props.limit,
@@ -37,7 +71,25 @@ export function LastTransactions(props: {
           onLimitChange: props.onLimitChange,
         }}
         columns={[
-          { title: "Nome", key: "title" },
+          {
+            title: "Nome",
+            key: "title",
+            render: (item) => (
+              <BaseTooltip content={item.title}>
+                <Typography
+                  noWrap
+                  sx={{
+                    maxWidth: 100,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    cursor: "default",
+                  }}
+                >
+                  {item.title}
+                </Typography>
+              </BaseTooltip>
+            ),
+          },
           {
             title: "Valor",
             align: "center",
@@ -66,7 +118,21 @@ export function LastTransactions(props: {
             title: "Categoria",
             align: "center",
             key: "category",
-            render: (item) => item.category.name.toUpperCase(),
+            render: (item) => (
+              <BaseTooltip content={item.category.name}>
+                <Typography
+                  noWrap
+                  sx={{
+                    maxWidth: 100,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    cursor: "default",
+                  }}
+                >
+                  {item.category.name.toUpperCase()}
+                </Typography>
+              </BaseTooltip>
+            ),
           },
           {
             title: "Criada em",
@@ -86,7 +152,7 @@ export function LastTransactions(props: {
             key: "type",
             render: (item) =>
               item.type === "income" ? (
-                <Chip label="Receita" color="success" sx={{ width: "100%" }} />
+                <Chip label="Receita" color="primary" sx={{ width: "100%" }} />
               ) : (
                 <Chip label="Despesa" color="error" sx={{ width: "100%" }} />
               ),
@@ -98,32 +164,32 @@ export function LastTransactions(props: {
             render: (item) =>
               item.frequency === "variable" ? "Variado" : "Fixo",
           },
-          {
-            title: "Ações",
-            align: "center",
-            render: (item) => (
-              <Stack
-                justifyContent="center"
-                direction="row"
-                divider={<Divider orientation="vertical" flexItem />}
-              >
-                <BaseTooltip content="Editar" arrow placement="left">
-                  <BaseButton
-                    isIconBtn
-                    icon={<EditOutlined fontSize="small" />}
-                    onClick={() => props.editData(item)}
-                  />
-                </BaseTooltip>
-                <BaseTooltip content="Deletar" arrow placement="right">
-                  <BaseButton
-                    isIconBtn
-                    icon={<Delete fontSize="small" color="error" />}
-                    onClick={() => props.deleteData(item)}
-                  />
-                </BaseTooltip>
-              </Stack>
-            ),
-          },
+          // {
+          //   title: "Ações",
+          //   align: "center",
+          //   render: (item) => (
+          //     <Stack
+          //       justifyContent="center"
+          //       direction="row"
+          //       divider={<Divider orientation="vertical" flexItem />}
+          //     >
+          //       <BaseTooltip content="Editar" arrow placement="left">
+          //         <BaseButton
+          //           isIconBtn
+          //           icon={<EditOutlined fontSize="small" />}
+          //           onClick={() => props.editData(item)}
+          //         />
+          //       </BaseTooltip>
+          //       <BaseTooltip content="Deletar" arrow placement="right">
+          //         <BaseButton
+          //           isIconBtn
+          //           icon={<Delete fontSize="small" color="error" />}
+          //           onClick={() => props.deleteData(item)}
+          //         />
+          //       </BaseTooltip>
+          //     </Stack>
+          //   ),
+          // },
         ]}
       />
     </BaseCard>

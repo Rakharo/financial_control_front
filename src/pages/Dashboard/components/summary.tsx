@@ -20,7 +20,7 @@ export default function Summary(props: { data: iSummary | null }) {
                     props.data?.balance
                       ? props.data?.balance < 0
                         ? "error"
-                        : "success"
+                        : "primary"
                       : "warning"
                   }
                 />
@@ -33,7 +33,7 @@ export default function Summary(props: { data: iSummary | null }) {
                   props.data?.balance
                     ? props.data?.balance < 0
                       ? "error"
-                      : "success"
+                      : "primary"
                     : "warning"
                 }
               >
@@ -50,11 +50,11 @@ export default function Summary(props: { data: iSummary | null }) {
                 color="text.secondary"
                 sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
               >
-                <PriceCheck fontSize="large" color="success" />
+                <PriceCheck fontSize="large" color="primary" />
                 Receitas
               </Typography>
 
-              <Typography variant="h5" color="success.main">
+              <Typography variant="h5" color="primary.main">
                 R$ {props.data?.total_income.toFixed(2)}
               </Typography>
             </CardContent>
