@@ -161,10 +161,10 @@ const lightTokens = {
 const darkTokens = {
   surface: {
     card: "#252228",
-    sidebar: "#232026",
+    sidebar: primaryColor[500],
   },
-  border: "#3A3342",
-  input: "#3A3342",
+  border: "neutral",
+  input: "rgba(97, 97, 97, 0.57)",
 };
 
 declare module "@mui/material/styles" {

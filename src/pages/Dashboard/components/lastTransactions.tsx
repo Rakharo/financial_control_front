@@ -45,7 +45,7 @@ export function LastTransactions(props: {
               borderRadius: "1rem",
             }}
           >
-            <BaseTooltip content="Editar" arrow placement="left">
+            <BaseTooltip content="Editar" arrow>
               <BaseButton
                 isIconBtn
                 icon={<Edit />}
@@ -53,7 +53,7 @@ export function LastTransactions(props: {
                 onClick={() => props.editData(selected[0])}
               />
             </BaseTooltip>
-            <BaseTooltip content="Deletar" arrow placement="right">
+            <BaseTooltip content="Deletar" arrow>
               <BaseButton
                 isIconBtn
                 icon={<Delete />}
@@ -164,32 +164,6 @@ export function LastTransactions(props: {
             render: (item) =>
               item.frequency === "variable" ? "Variado" : "Fixo",
           },
-          // {
-          //   title: "Ações",
-          //   align: "center",
-          //   render: (item) => (
-          //     <Stack
-          //       justifyContent="center"
-          //       direction="row"
-          //       divider={<Divider orientation="vertical" flexItem />}
-          //     >
-          //       <BaseTooltip content="Editar" arrow placement="left">
-          //         <BaseButton
-          //           isIconBtn
-          //           icon={<EditOutlined fontSize="small" />}
-          //           onClick={() => props.editData(item)}
-          //         />
-          //       </BaseTooltip>
-          //       <BaseTooltip content="Deletar" arrow placement="right">
-          //         <BaseButton
-          //           isIconBtn
-          //           icon={<Delete fontSize="small" color="error" />}
-          //           onClick={() => props.deleteData(item)}
-          //         />
-          //       </BaseTooltip>
-          //     </Stack>
-          //   ),
-          // },
         ]}
       />
     </BaseCard>

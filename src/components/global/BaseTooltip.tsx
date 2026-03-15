@@ -34,7 +34,7 @@ export default function BaseTooltip(props: {
         },
         arrow: {
           sx: {
-            color: "primary.light",
+            color: "primary.dark",
           },
         },
       }}

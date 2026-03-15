@@ -168,7 +168,7 @@ export default function BaseTable<T>({
         >
           <TableHead>
             <TableRow>
-              {selectable && (
+              {selectable && selected.length > 0  && (
                 <TableCell
                   padding="checkbox"
                   sx={{
@@ -247,11 +247,10 @@ export default function BaseTable<T>({
                     },
                   }}
                 >
-                  {selectable && (
+                  {selectable && selected.length > 0 && (
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={selected.includes(getRow?.(item) || "")}
-                        onChange={() => handleSelect(getRow?.(item) || "")}
                         sx={{
                           color: "primary.light",
                           "&.Mui-checked": {
