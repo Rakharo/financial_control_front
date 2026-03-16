@@ -24,7 +24,7 @@ export function LastTransactions(props: {
   return (
     <BaseCard
       cardTitle="Últimos lançamentos"
-      contentStyle={{ gap: 1, maxHeight: "50dvh" }}
+      contentStyle={{ gap: 1, maxHeight: "60dvh" }}
       cardTitleAction
       cardTitleBtnText="Novo Lançamento"
       cardTitleBtnIcon={<Add fontSize="small" />}

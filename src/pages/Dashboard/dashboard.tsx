@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import Summary from "./components/summary";
 import { LastTransactions } from "./components/lastTransactions";
 import UserCategories from "./components/userCategories";
@@ -24,6 +24,8 @@ import dayjs, { Dayjs } from "dayjs";
 import BaseDatePicker from "../../components/global/BaseDatePicker";
 import ConfirmationDialog from "../../components/alert/ConfirmationDialog";
 import { useDashboard } from "../../hooks/useAnalytics";
+import BaseButton from "../../components/global/BaseButton";
+import { Add } from "@mui/icons-material";
 
 export default function Dashboard() {
   const [openTransaction, setOpenTransaction] = useState(false);
@@ -44,7 +46,7 @@ export default function Dashboard() {
   const { data: dashboardData, isLoading: dashboardLoading } = useDashboard({
     month: filterDate ? filterDate.month() + 1 : undefined,
     year: filterDate ? filterDate.year() : undefined,
-  })
+  });
 
   const { data: transactionData, isLoading: transactionLoading } =
     useTransactionsList({
@@ -77,14 +79,19 @@ export default function Dashboard() {
         },
       );
     } else {
-      updateTransaction.mutate({
-        id: editingTransaction.id,
-        data: data,
-      }, {onSuccess: () => {
-        setOpenTransaction(false);
-        setTransactionPage(1);
-        setEditingTransaction(null);
-      }});
+      updateTransaction.mutate(
+        {
+          id: editingTransaction.id,
+          data: data,
+        },
+        {
+          onSuccess: () => {
+            setOpenTransaction(false);
+            setTransactionPage(1);
+            setEditingTransaction(null);
+          },
+        },
+      );
     }
   }
 
@@ -115,16 +122,26 @@ export default function Dashboard() {
   return (
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" spacing={2}>
-        <Typography variant="h5">Dashboard</Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%"}}>
+          <Typography variant="h5">Dashboard</Typography>
 
-        <BaseDatePicker
-          label="Período"
-          value={filterDate}
-          onChange={setFilterDate}
-          format="MM/YYYY"
-          views={["month", "year"]}
-          size="small"
-        />
+          <BaseDatePicker
+            label="Período"
+            value={filterDate}
+            onChange={setFilterDate}
+            format="MM/YYYY"
+            views={["month", "year"]}
+            size="small"
+          />
+
+          <BaseButton
+            size="large"
+            btnText="Novo lançamento"
+            startIcon={<Add fontSize="large" />}
+            onClick={() => setOpenTransaction(true)}
+            // color="secondary"
+          />
+        </Box>
       </Stack>
       <Summary data={dashboardData!} />
       <Grid container spacing={2} sx={{ maxHeight: "100dvh" }}>

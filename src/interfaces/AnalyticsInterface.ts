@@ -12,6 +12,6 @@ export interface iDashboard {
   balance: number;
   expenses: number;
   income: number;
-  dailyExpenses: iDailyExpense[];
-  topCategories: iTopCategories[];
+  daily_expenses: iDailyExpense[];
+  top_categories: iTopCategories[];
 }

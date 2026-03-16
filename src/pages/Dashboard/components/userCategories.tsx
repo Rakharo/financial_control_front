@@ -23,7 +23,7 @@ export default function UserCategories(props: {
   return (
     <BaseCard
       cardTitle="Minhas Categorias"
-      contentStyle={{ gap: 1, maxHeight: "50dvh", overflow: "auto" }}
+      contentStyle={{ gap: 1, maxHeight: "60dvh", overflow: "auto" }}
       cardTitleAction
       cardTitleBtnText="Nova Categoria"
       cardTitleBtnIcon={<Add fontSize="small" />}

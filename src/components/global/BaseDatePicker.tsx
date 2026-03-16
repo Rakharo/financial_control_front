@@ -22,7 +22,7 @@ export default function BaseDatePicker(props: {
   width?: string;
 }) {
   return (
-    <FormControl fullWidth error={props.error} size={props.size}>
+    <FormControl error={props.error} size={props.size}>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
         <DatePicker
           label={props.label}
