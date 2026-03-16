@@ -1,6 +1,7 @@
 export interface iCategoryRequest {
     name: string;
     type: string;
+    color: string
 }
 
 export interface iCategory {
@@ -10,6 +11,7 @@ export interface iCategory {
     type: string;
     created_at?: string;
     updated_at?: string;
+    color: string;
 }
 
 export interface iCategoryResponse {

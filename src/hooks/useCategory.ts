@@ -72,6 +72,14 @@ export function useUpdateCategory() {
       queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
+      
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
+      
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard"],
+      });
 
       showAlert({
         title: "Sucesso!",

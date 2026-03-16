@@ -147,7 +147,7 @@ export default function Summary(props: { data: iDashboard | null }) {
             </BaseCard>
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-            <BaseCard cardTitle="Parcelas">
+            <BaseCard cardTitle="Parcelas (à pagar)">
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <BaseCard>
@@ -213,8 +213,7 @@ export default function Summary(props: { data: iDashboard | null }) {
                     <BaseCard contentStyle={{flexDirection: 'row', alignItems: 'center', gap: 1}}>
                       <Chip
                         label={item.category.toUpperCase()}
-                        color="secondary"
-                        sx={{color: 'secondary.contrastText'}}
+                        sx={{color: 'secondary.contrastText', backgroundColor: item.color}}
                       />
                       <Typography>
                         R$ {item.total.toFixed(2) ?? "0.00"}

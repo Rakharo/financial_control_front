@@ -120,17 +120,17 @@ export function LastTransactions(props: {
             key: "category",
             render: (item) => (
               <BaseTooltip content={item.category.name}>
-                <Typography
-                  noWrap
+                <Chip
+                  label={item.category.name.toUpperCase()}
                   sx={{
-                    maxWidth: 100,
+                    color: item.category.user_id === 0 ? "default" : "secondary.contrastText",
+                    backgroundColor: item.category.user_id === 0 ? "default" : item.category.color,
+                    width: 100,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     cursor: "default",
                   }}
-                >
-                  {item.category.name.toUpperCase()}
-                </Typography>
+                />
               </BaseTooltip>
             ),
           },

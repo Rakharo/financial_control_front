@@ -6,6 +6,8 @@ interface iDailyExpense {
 interface iTopCategories {
   category: string;
   total: number;
+  color: string;
+  user_id: number | null;
 }
 
 interface iBalance {

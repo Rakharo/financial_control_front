@@ -1,5 +1,5 @@
 import { Add, Delete, Edit } from "@mui/icons-material";
-import { Chip, Stack, Typography } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import BaseButton from "../../../components/global/BaseButton";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
@@ -79,17 +79,17 @@ export default function UserCategories(props: {
             key: "name",
             render: (item) => (
               <BaseTooltip content={item.name}>
-                <Typography
-                  noWrap
+                <Chip
+                  label={item.name.toUpperCase()}
                   sx={{
-                    maxWidth: 100,
+                    color: item.user_id === 0 ? "default" : "secondary.contrastText",
+                    backgroundColor: item.user_id === 0 ? "default" : item.color,
+                    width: 100,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     cursor: "default",
                   }}
-                >
-                  {item.name.toUpperCase()}
-                </Typography>
+                />
               </BaseTooltip>
             ),
           },
