@@ -2,22 +2,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createTransaction,
   deleteTransaction,
-  getSummary,
   getTransactionById,
   getTransactionsList,
   updateTransaction,
 } from "../services/TransactionService";
 import type { iTransaction, iTransactionRequest } from "../interfaces/TransactionInterface";
 import { useAlert } from "../contexts/AlertContext";
-
-export function useSummary({ month, year }: { month?: number; year?: number }) {
-  return useQuery({
-    queryKey: ["summary", month, year],
-    queryFn: () => getSummary(month, year),
-    refetchOnWindowFocus: false,
-    retry: 1,
-  });
-}
 
 export function useTransactionsList({
   page,

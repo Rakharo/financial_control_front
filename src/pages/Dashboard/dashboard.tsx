@@ -12,7 +12,6 @@ import {
 import {
   useCreateTransaction,
   useDeleteTransaction,
-  useSummary,
   useTransactionsList,
   useUpdateTransaction,
 } from "../../hooks/useTransactions";
@@ -24,6 +23,7 @@ import type { iCategory } from "../../interfaces/CategoryInterface";
 import dayjs, { Dayjs } from "dayjs";
 import BaseDatePicker from "../../components/global/BaseDatePicker";
 import ConfirmationDialog from "../../components/alert/ConfirmationDialog";
+import { useDashboard } from "../../hooks/useAnalytics";
 
 export default function Dashboard() {
   const [openTransaction, setOpenTransaction] = useState(false);
@@ -41,10 +41,11 @@ export default function Dashboard() {
 
   const [filterDate, setFilterDate] = useState<Dayjs | null>(dayjs());
 
-  const { data: summaryData, isLoading: summaryLoading } = useSummary({
+  const { data: dashboardData, isLoading: dashboardLoading } = useDashboard({
     month: filterDate ? filterDate.month() + 1 : undefined,
     year: filterDate ? filterDate.year() : undefined,
-  });
+  })
+
   const { data: transactionData, isLoading: transactionLoading } =
     useTransactionsList({
       page: transactionPage,
@@ -107,7 +108,7 @@ export default function Dashboard() {
     deleteCategory.mutate({ data: category });
   }
 
-  if (summaryLoading && transactionLoading && categoryLoading) {
+  if (dashboardLoading && transactionLoading && categoryLoading) {
     return <div>Carregando...</div>;
   }
 
@@ -125,7 +126,7 @@ export default function Dashboard() {
           size="small"
         />
       </Stack>
-      <Summary data={summaryData!} />
+      <Summary data={dashboardData!} />
       <Grid container spacing={2} sx={{ maxHeight: "100dvh" }}>
         <Grid size={{ xs: 12, md: 7 }}>
           <LastTransactions

@@ -34,13 +34,6 @@ export interface iTransactionResponse {
   year: number;
 }
 
-
-export interface iSummary {
-  balance: number;
-  total_income: number;
-  total_expense: number;
-}
-
 export interface iInstallment {
   id: number;
   description: string;

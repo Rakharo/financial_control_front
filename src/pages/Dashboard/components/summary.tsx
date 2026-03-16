@@ -1,9 +1,9 @@
 import { Typography, Grid, Card, CardContent } from "@mui/material";
-import type { iSummary } from "../../../interfaces/TransactionInterface";
 import BaseCard from "../../../components/global/BaseCard";
 import { CurrencyExchange, MoneyOff, PriceCheck } from "@mui/icons-material";
+import type { iDashboard } from "../../../interfaces/AnalyticsInterface";
 
-export default function Summary(props: { data: iSummary | null }) {
+export default function Summary(props: { data: iDashboard | null }) {
   return (
     <BaseCard cardTitle="Meu resumo">
       <Grid container spacing={2}>
@@ -55,7 +55,7 @@ export default function Summary(props: { data: iSummary | null }) {
               </Typography>
 
               <Typography variant="h5" color="primary.main">
-                R$ {props.data?.total_income.toFixed(2)}
+                R$ {props.data?.income.toFixed(2)}
               </Typography>
             </CardContent>
           </Card>
@@ -73,7 +73,7 @@ export default function Summary(props: { data: iSummary | null }) {
               </Typography>
 
               <Typography variant="h5" color="error.main">
-                R$ {props.data?.total_expense.toFixed(2)}
+                R$ {props.data?.expenses.toFixed(2)}
               </Typography>
             </CardContent>
           </Card>

@@ -1,17 +1,9 @@
 import { api } from "../api/axios";
 import type {
-  iSummary,
   iTransaction,
   iTransactionRequest,
   iTransactionResponse,
 } from "../interfaces/TransactionInterface";
-
-export async function getSummary(month?: number, year?: number) {
-  const response = await api.get<iSummary>("/transaction/summary", {
-    params: { month, year },
-  });
-  return response.data;
-}
 
 export async function getTransactionsList(page?: number, limit?: number, month?: number, year?: number) {
   const response = await api.get<iTransactionResponse>("/transaction", {
