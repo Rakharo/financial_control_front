@@ -39,7 +39,7 @@ const lightPalette = {
     main: secondaryColor[500],
     light: secondaryColor[200],
     dark: secondaryColor[400],
-    contrastText: "#231F20",
+    contrastText: "#ffffff",
   },
 
   background: {
@@ -100,7 +100,7 @@ const darkPalette = {
     main: secondaryColor[500],
     light: secondaryColor[300],
     dark: secondaryColor[700],
-    contrastText: "#231F20",
+    contrastText: "#ffffff",
   },
 
   background: {

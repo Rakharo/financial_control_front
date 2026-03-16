@@ -122,7 +122,18 @@ export default function Dashboard() {
   return (
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" spacing={2}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%"}}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+            padding: "0 24px",
+            // backgroundColor: "secondary.dark",
+            // color: "secondary.contrastText",
+            // borderRadius: "1rem",
+          }}
+        >
           <Typography variant="h5">Dashboard</Typography>
 
           <BaseDatePicker
