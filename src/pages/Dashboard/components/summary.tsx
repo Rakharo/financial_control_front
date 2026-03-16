@@ -6,93 +6,239 @@ import type { iDashboard } from "../../../interfaces/AnalyticsInterface";
 export default function Summary(props: { data: iDashboard | null }) {
   return (
     <>
-      <BaseCard cardTitle="Meu resumo">
+      <BaseCard cardTitle="Dados analíticos">
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card>
-              <CardContent>
-                <Typography
-                  color="text.secondary"
-                  sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                >
-                  <CurrencyExchange
-                    fontSize="large"
-                    color={
-                      props.data?.balance
-                        ? props.data?.balance < 0
-                          ? "error"
-                          : "primary"
-                        : "warning"
-                    }
-                  />
-                  Saldo atual
-                </Typography>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <BaseCard cardTitle="Resumo mensal">
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 4 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography
+                        color="text.secondary"
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <CurrencyExchange
+                          fontSize="large"
+                          color={
+                            props.data?.month.balance
+                              ? props.data?.month.balance < 0
+                                ? "error"
+                                : "primary"
+                              : "warning"
+                          }
+                        />
+                        Saldo atual
+                      </Typography>
 
-                <Typography
-                  variant="h5"
-                  color={
-                    props.data?.balance
-                      ? props.data?.balance < 0
-                        ? "error"
-                        : "primary"
-                      : "warning"
-                  }
-                >
-                  R$ {props.data?.balance.toFixed(2)}
-                </Typography>
-              </CardContent>
-            </Card>
+                      <Typography
+                        variant="h5"
+                        color={
+                          props.data?.month.balance
+                            ? props.data?.month.balance < 0
+                              ? "error"
+                              : "primary"
+                            : "warning"
+                        }
+                      >
+                        R$ {props.data?.month.balance?.toFixed(2) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 4 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography
+                        color="text.secondary"
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <PriceCheck fontSize="large" color="primary" />
+                        Receitas
+                      </Typography>
+
+                      <Typography variant="h5" color="primary.main">
+                        R$ {props.data?.month.income.toFixed(2) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 4 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography
+                        color="text.secondary"
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <MoneyOff fontSize="large" color="error" />
+                        Despesas
+                      </Typography>
+
+                      <Typography variant="h5" color="error.main">
+                        R$ {props.data?.month.expense.toFixed(2) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </BaseCard>
           </Grid>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <BaseCard cardTitle="Resumo anual">
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 4 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography
+                        color="text.secondary"
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <CurrencyExchange
+                          fontSize="large"
+                          color={
+                            props.data?.year.balance
+                              ? props.data?.year.balance < 0
+                                ? "error"
+                                : "primary"
+                              : "warning"
+                          }
+                        />
+                        Saldo atual
+                      </Typography>
 
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card>
-              <CardContent>
-                <Typography
-                  color="text.secondary"
-                  sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                >
-                  <PriceCheck fontSize="large" color="primary" />
-                  Receitas
-                </Typography>
+                      <Typography
+                        variant="h5"
+                        color={
+                          props.data?.year.balance
+                            ? props.data?.year.balance < 0
+                              ? "error"
+                              : "primary"
+                            : "warning"
+                        }
+                      >
+                        R$ {props.data?.year.balance.toFixed(2) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 4 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography
+                        color="text.secondary"
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <PriceCheck fontSize="large" color="primary" />
+                        Receitas
+                      </Typography>
 
-                <Typography variant="h5" color="primary.main">
-                  R$ {props.data?.income.toFixed(2)}
-                </Typography>
-              </CardContent>
-            </Card>
+                      <Typography variant="h5" color="primary.main">
+                        R$ {props.data?.year.income.toFixed(2) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 4 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography
+                        color="text.secondary"
+                        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+                      >
+                        <MoneyOff fontSize="large" color="error" />
+                        Despesas
+                      </Typography>
+
+                      <Typography variant="h5" color="error.main">
+                        R$ {props.data?.year.expense.toFixed(2) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </BaseCard>
           </Grid>
+          <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+            <BaseCard cardTitle="Parcelas">
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography color="text.secondary">
+                        Parcelas deste mês
+                      </Typography>
 
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card>
-              <CardContent>
-                <Typography
-                  color="text.secondary"
-                  sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                >
-                  <MoneyOff fontSize="large" color="error" />
-                  Despesas
-                </Typography>
+                      <Typography variant="h5" color="warning.main">
+                        R${" "}
+                        {props.data?.installments?.monthly_installments.toFixed(
+                          2,
+                        ) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
 
-                <Typography variant="h5" color="error.main">
-                  R$ {props.data?.expenses.toFixed(2)}
-                </Typography>
-              </CardContent>
-            </Card>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography color="text.secondary">
+                        Parcelas futuras
+                      </Typography>
+
+                      <Typography variant="h5" color="warning.main">
+                        R${" "}
+                        {props.data?.installments?.future_installments.toFixed(
+                          2,
+                        ) ?? "0.00"}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 12 }}>
+                  <Card>
+                    <CardContent>
+                      <Typography color="text.secondary">
+                        Maior parcela ativa atualmente
+                      </Typography>
+
+                      <Typography variant="h5">
+                        R$
+                        {` ${
+                          props.data?.installments?.biggest_installment.toFixed(
+                            2,
+                          ) ?? "0.00"
+                        } (${props.data?.installments?.remaining_installments} restantes)`}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </BaseCard>
           </Grid>
         </Grid>
       </BaseCard>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <BaseCard cardTitle="Despesas mais usadas" contentStyle={{maxHeight: "50dvh"}}>
+          <BaseCard
+            cardTitle="Despesas mais usadas"
+            contentStyle={{ maxHeight: "50dvh" }}
+          >
             <Grid container spacing={2}>
-              {props.data?.top_categories.map((item) => {
+              {props.data?.top_categories?.map((item) => {
                 return (
                   <Grid size={{ xs: 12, md: 6 }}>
                     <Card>
-                      <CardContent sx={{display: "flex", gap: 1, alignItems: "center"}}>
-                        <Chip label={item.category.toUpperCase()} color="secondary" />
-                        {/* <Typography>{item.category.toUpperCase()}</Typography> */}
-                        <Typography>R$ {item.total.toFixed(2)}</Typography>
+                      <CardContent
+                        sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                      >
+                        <Chip
+                          label={item.category.toUpperCase()}
+                          color="secondary"
+                        />
+                        <Typography>
+                          R$ {item.total.toFixed(2) ?? "0.00"}
+                        </Typography>
                       </CardContent>
                     </Card>
                   </Grid>
@@ -102,16 +248,22 @@ export default function Summary(props: { data: iDashboard | null }) {
           </BaseCard>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <BaseCard cardTitle="Dias de despesa" contentStyle={{maxHeight: "50dvh"}}>
+          <BaseCard
+            cardTitle="Dias de despesa"
+            contentStyle={{ maxHeight: "50dvh" }}
+          >
             <Grid container spacing={2}>
-              {props.data?.daily_expenses.map((item) => {
+              {props.data?.daily_expenses?.map((item) => {
                 return (
                   <Grid size={{ xs: 12, md: 6 }}>
                     <Card>
-                      <CardContent sx={{display: "flex", gap: 1, alignItems: "center"}}>
+                      <CardContent
+                        sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                      >
                         <Chip label={`Dia ${item.day}`} color="secondary" />
-                        {/* <Typography>Dia {item.day}</Typography> */}
-                        <Typography>R$ {item.total.toFixed(2)}</Typography>
+                        <Typography>
+                          R$ {item.total.toFixed(2) ?? "0.00"}
+                        </Typography>
                       </CardContent>
                     </Card>
                   </Grid>

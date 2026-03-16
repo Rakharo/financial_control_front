@@ -8,10 +8,24 @@ interface iTopCategories {
   total: number;
 }
 
-export interface iDashboard {
+interface iBalance {
   balance: number;
-  expenses: number;
+  expense: number;
   income: number;
+}
+
+interface iInstallmentAnalytics {
+  monthly_installments: number;
+  future_installments: number;
+  biggest_installment: number;
+  remaining_installments: number;
+}
+
+export interface iDashboard {
+  month: iBalance;
+  year: iBalance;
+  lifetime_balance: number;
+  installments: iInstallmentAnalytics;
   daily_expenses: iDailyExpense[];
   top_categories: iTopCategories[];
 }
