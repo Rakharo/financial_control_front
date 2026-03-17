@@ -107,7 +107,7 @@ export function useDeleteTransaction() {
         queryKey: ["transactions"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["summary"],
+        queryKey: ["dashboard"],
       });
 
       showAlert({

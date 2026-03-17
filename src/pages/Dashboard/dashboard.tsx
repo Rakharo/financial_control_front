@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Stack } from "@mui/material";
 import Summary from "./components/summary";
 import { LastTransactions } from "./components/lastTransactions";
 import UserCategories from "./components/userCategories";
@@ -134,7 +134,6 @@ export default function Dashboard() {
             // borderRadius: "1rem",
           }}
         >
-          <Typography variant="h5">Dashboard</Typography>
 
           <BaseDatePicker
             label="Período"
