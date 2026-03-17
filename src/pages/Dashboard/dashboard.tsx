@@ -238,6 +238,7 @@ export default function Dashboard() {
         open={openDeleteDialog}
         variant="delete"
         title={editingTransaction ? "Deletar transação" : "Deletar categoria"}
+        description={editingTransaction?.installment_plan_id ? "Esta ação irá exlcuir todas as parcelas dessa transação" : undefined}
         highlight={
           editingTransaction ? editingTransaction?.title : editingCategory?.name
         }
