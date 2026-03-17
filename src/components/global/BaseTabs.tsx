@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab, Box, type SxProps, type Theme } from "@mui/material";
 import BaseButton from "./BaseButton";
 import BaseTooltip from "./BaseTooltip";
 
 export default function BaseTabs(props: {
   initialValue?: string | number;
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
   variant?: "fullWidth" | "scrollable" | "standard";
   orientation?: "horizontal" | "vertical";
   scrollButtons?: boolean;

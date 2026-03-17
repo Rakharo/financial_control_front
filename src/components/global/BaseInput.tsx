@@ -8,6 +8,8 @@ import {
   IconButton,
   Box,
   Typography,
+  type SxProps,
+  type Theme,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import BaseButton from "./BaseButton";
@@ -35,7 +37,7 @@ export default function BaseInput(props: {
     input?: any;
     inputLabel?: any;
   };
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = props.type === "password";

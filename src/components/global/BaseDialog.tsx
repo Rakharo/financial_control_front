@@ -5,6 +5,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  type SxProps,
+  type Theme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import BaseButton from "./BaseButton";
@@ -40,7 +42,7 @@ export default function BaseDialog(props: {
     | "warning"
     | "neutral";
   width?: "xs" | "sm" | "md" | "lg" | "xl";
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
   noColorHeader?: boolean;
   hideDefaultActions?: boolean;
   disableBackdropClose?: boolean;

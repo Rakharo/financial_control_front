@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, type SxProps, type Theme } from "@mui/material";
 
 type BaseButtonProps = {
   type?: "button" | "submit" | "reset";
@@ -15,8 +15,8 @@ type BaseButtonProps = {
   isIconBtn?: boolean;
   icon?: React.ReactNode;
   component?: string;
-  sx?: React.CSSProperties;
-  onClick?: () => void;
+  sx?: SxProps<Theme>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 } & React.ComponentPropsWithoutRef<"button">; // Para aceitar outras props do Button/IconButton
 
 const BaseButton = React.forwardRef<HTMLButtonElement, BaseButtonProps>(

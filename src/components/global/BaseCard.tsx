@@ -5,6 +5,8 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  type SxProps,
+  type Theme,
 } from "@mui/material";
 import BaseButton from "./BaseButton";
 
@@ -28,7 +30,7 @@ export default function BaseCard(props: {
   mediaHeight?: number;
   mediaImage?: string;
   mediaAlt?: string;
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
   contentStyle?: React.CSSProperties;
 }) {
   return (

@@ -1,4 +1,4 @@
-import { TextField, FormControl } from "@mui/material";
+import { TextField, FormControl, type SxProps, type Theme } from "@mui/material";
 
 interface BaseNumberInputProps {
   label?: string;
@@ -12,7 +12,7 @@ interface BaseNumberInputProps {
   error?: boolean;
   helperText?: string;
   size?: "small" | "medium";
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
 }
 
 export default function BaseNumberInput({

@@ -13,6 +13,8 @@ import {
   ListSubheader,
   Divider,
   TextField,
+  type SxProps,
+  type Theme,
 } from "@mui/material";
 import { useState, useMemo } from "react";
 import BaseButton from "./BaseButton";
@@ -34,7 +36,7 @@ export default function BaseSelect(props: {
   size?: "small" | "medium";
   required?: boolean;
   color?: "primary" | "secondary" | "error" | "info" | "success" | "warning";
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
   customButtonOption?: {
     buttonProps: React.ComponentProps<typeof BaseButton>;
     menuItemProps?: React.ComponentProps<typeof MenuItem>;

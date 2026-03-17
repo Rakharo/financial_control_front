@@ -3,6 +3,8 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
+  type SxProps,
+  type Theme,
 } from "@mui/material";
 
 export default function BaseCheckbox(props: {
@@ -14,7 +16,7 @@ export default function BaseCheckbox(props: {
   helperText?: string;
   required?: boolean;
   color?: "primary" | "secondary" | "error" | "info" | "success" | "warning";
-  sx?: React.CSSProperties;
+  sx?: SxProps<Theme>;
 }) {
   return (
     <FormControl error={props.error} sx={{ ...props.sx }}>
