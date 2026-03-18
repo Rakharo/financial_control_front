@@ -87,7 +87,7 @@ export default function TransactionDialog(props: {
       firstBtnText="Cancelar"
       firstBtnColor="neutral"
       firstBtnVariant="text"
-      secondBtnText={props.isEdit ? "Salvar" : "Criar"}
+      secondBtnText={props.isEdit ? "Salvar" : "Lançar"}
       secondBtnColor="primary"
       secondBtnVariant="contained"
       onFirstBtnClick={() => props.onClose(false)}

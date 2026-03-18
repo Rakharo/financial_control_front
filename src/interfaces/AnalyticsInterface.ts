@@ -4,16 +4,24 @@ interface iDailyExpense {
 }
 
 interface iTopCategories {
+  category_id: number;
   category: string;
   total: number;
   color: string;
   user_id: number | null;
+  transactions: iTopCategoriesTransactions[];
 }
 
 interface iBalance {
   balance: number;
   expense: number;
   income: number;
+}
+
+interface iTopCategoriesTransactions {
+  id: number;
+  title: string;
+  value: number;
 }
 
 interface iInstallmentAnalytics {

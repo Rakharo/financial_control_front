@@ -97,14 +97,30 @@ export default function Dashboard() {
 
   const handleCreateCategory = (data: any) => {
     if (!editingCategory) {
-      createCategory.mutate(data);
+      createCategory.mutate(
+        { data },
+        {
+          onSuccess: () => {
+            setOpenCategory(false);
+            setCategoriesPage(1);
+          },
+        },
+      );
     } else {
-      updatedCategory.mutate({
-        id: editingCategory.id,
-        data: data,
-      });
+      updatedCategory.mutate(
+        {
+          id: editingCategory.id,
+          data: data,
+        },
+        {
+          onSuccess: () => {
+            setOpenCategory(false);
+            setCategoriesPage(1);
+            setEditingCategory(null);
+          },
+        },
+      );
     }
-    setOpenCategory(false);
   };
 
   function handleDeleteTransaction(transaction: iTransaction) {
@@ -134,7 +150,6 @@ export default function Dashboard() {
             // borderRadius: "1rem",
           }}
         >
-
           <BaseDatePicker
             label="Período"
             value={filterDate}
@@ -153,7 +168,11 @@ export default function Dashboard() {
           />
         </Box>
       </Stack>
-      <Summary data={dashboardData!} />
+      <Summary
+        data={dashboardData!}
+        month={filterDate?.format("MMMM") ?? ""}
+        year={filterDate?.year() || 0}
+      />
       <Grid container spacing={2} sx={{ maxHeight: "100dvh" }}>
         <Grid size={{ xs: 12, md: 7 }}>
           <LastTransactions
@@ -238,7 +257,11 @@ export default function Dashboard() {
         open={openDeleteDialog}
         variant="delete"
         title={editingTransaction ? "Deletar transação" : "Deletar categoria"}
-        description={editingTransaction?.installment_plan_id ? "Esta ação irá exlcuir todas as parcelas dessa transação" : undefined}
+        description={
+          editingTransaction?.installment_plan_id
+            ? "Esta ação irá exlcuir todas as parcelas dessa transação"
+            : undefined
+        }
         highlight={
           editingTransaction ? editingTransaction?.title : editingCategory?.name
         }

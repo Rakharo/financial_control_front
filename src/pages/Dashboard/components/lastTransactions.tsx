@@ -135,13 +135,13 @@ export function LastTransactions(props: {
             ),
           },
           {
-            title: "Criada em",
+            title: "Lançado em",
             align: "center",
             key: "created_at",
             render: (item) => formatDateBR(item.created_at),
           },
           {
-            title: "Data de lançamento",
+            title: "Data de vencimento",
             align: "center",
             key: "transaction_date",
             render: (item) => formatDateBR(item.transaction_date),
