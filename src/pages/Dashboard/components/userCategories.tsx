@@ -1,5 +1,5 @@
 import { Add, Delete, Edit } from "@mui/icons-material";
-import { Chip, Stack } from "@mui/material";
+import { Chip, Skeleton, Stack } from "@mui/material";
 import BaseButton from "../../../components/global/BaseButton";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseTable from "../../../components/global/BaseTable";
@@ -10,6 +10,7 @@ import { useThemeMode } from "../../../contexts/ThemeContext";
 
 export default function UserCategories(props: {
   data: iCategory[];
+  loading: boolean;
   page: number;
   limit: number;
   totalPages: number;
@@ -29,106 +30,124 @@ export default function UserCategories(props: {
       cardTitleBtnIcon={<Add fontSize="small" />}
       cardTitleOnClick={() => props.openDialog()}
     >
-      <BaseTable
-        data={props.data}
-        selectable
-        selectionMode="single"
-        getRow={(row) => row}
-        renderBulkActions={(selected) =>
-          selected[0].user_id === 0 ? (
-            "-"
-          ) : (
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                backgroundColor:
-                  mode === "dark" ? "primary.dark" : "rgba(255, 255, 255, 0.7)",
-                borderRadius: "1rem",
-              }}
-            >
-              <BaseTooltip content="Editar" arrow>
-                <BaseButton
-                  isIconBtn
-                  icon={<Edit />}
-                  color="secondary"
-                  onClick={() => props.editData(selected[0])}
-                />
-              </BaseTooltip>
-              <BaseTooltip content="Deletar" arrow>
-                <BaseButton
-                  isIconBtn
-                  icon={<Delete />}
-                  color="error"
-                  onClick={() => props.deleteData(selected[0])}
-                />
-              </BaseTooltip>
-            </Stack>
-          )
-        }
-        pagination={{
-          page: props.page,
-          limit: props.limit,
-          total: props.totalPages,
-          onPageChange: props.onPageChange,
-          onLimitChange: props.onLimitChange,
-        }}
-        columns={[
-          {
-            title: "Nome",
-            key: "name",
-            render: (item) => (
-              <BaseTooltip content={item.name}>
-                <Chip
-                  label={item.name.toUpperCase()}
-                  sx={{
-                    color: item.user_id === 0 ? "default" : "secondary.contrastText",
-                    backgroundColor: item.user_id === 0 ? "default" : item.color,
-                    width: 100,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    cursor: "default",
-                  }}
-                />
-              </BaseTooltip>
-            ),
-          },
-          {
-            title: "Criada em",
-            align: "center",
-            key: "created_at",
-            render: (item) =>
-              item.user_id === 0 ? "-" : formatDateBR(item.created_at!),
-          },
-          {
-            title: "Tipo",
-            align: "center",
-            key: "type",
-            render: (item) =>
-              item.type === "income" ? (
-                <Chip label="Receita" color="primary" sx={{ width: "100%" }} />
-              ) : (
-                <Chip label="Despesa" color="error" sx={{ width: "100%" }} />
+      {props.loading ? (
+        <Skeleton width="100%" height={100} animation="wave" />
+      ) : (
+        <BaseTable
+          data={props.data}
+          selectable
+          selectionMode="single"
+          getRow={(row) => row}
+          renderBulkActions={(selected) =>
+            selected[0].user_id === 0 ? (
+              "-"
+            ) : (
+              <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                  backgroundColor:
+                    mode === "dark"
+                      ? "primary.dark"
+                      : "rgba(255, 255, 255, 0.7)",
+                  borderRadius: "1rem",
+                }}
+              >
+                <BaseTooltip content="Editar" arrow>
+                  <BaseButton
+                    isIconBtn
+                    icon={<Edit />}
+                    color="secondary"
+                    onClick={() => props.editData(selected[0])}
+                  />
+                </BaseTooltip>
+                <BaseTooltip content="Deletar" arrow>
+                  <BaseButton
+                    isIconBtn
+                    icon={<Delete />}
+                    color="error"
+                    onClick={() => props.deleteData(selected[0])}
+                  />
+                </BaseTooltip>
+              </Stack>
+            )
+          }
+          pagination={{
+            page: props.page,
+            limit: props.limit,
+            total: props.totalPages,
+            onPageChange: props.onPageChange,
+            onLimitChange: props.onLimitChange,
+          }}
+          columns={[
+            {
+              title: "Nome",
+              key: "name",
+              render: (item) => (
+                <BaseTooltip content={item.name}>
+                  <Chip
+                    label={item.name.toUpperCase()}
+                    sx={{
+                      color:
+                        item.user_id === 0
+                          ? "default"
+                          : "secondary.contrastText",
+                      backgroundColor:
+                        item.user_id === 0 ? "default" : item.color,
+                      width: 100,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      cursor: "default",
+                    }}
+                  />
+                </BaseTooltip>
               ),
-          },
-          {
-            title: "Origem",
-            align: "center",
-            sortable: true,
-            key: "user_id",
-            render: (item) =>
-              item.user_id === 0 ? (
-                <Chip label="Sistema" color="default" sx={{ width: "100%" }} />
-              ) : (
-                <Chip
-                  label="Usuário"
-                  color="secondary"
-                  sx={{ width: "100%" }}
-                />
-              ),
-          },
-        ]}
-      />
+            },
+            {
+              title: "Criada em",
+              align: "center",
+              key: "created_at",
+              render: (item) =>
+                item.user_id === 0 ? "-" : formatDateBR(item.created_at!),
+            },
+            {
+              title: "Tipo",
+              align: "center",
+              key: "type",
+              render: (item) =>
+                item.type === "income" ? (
+                  <Chip
+                    label="Receita"
+                    color="primary"
+                    sx={{ width: "100%" }}
+                  />
+                ) : (
+                  <Chip label="Despesa" color="error" sx={{ width: "100%" }} />
+                ),
+            },
+            {
+              title: "Origem",
+              align: "center",
+              sortable: true,
+              key: "user_id",
+              render: (item) =>
+                item.user_id === 0 ? (
+                  <Chip
+                    label="Sistema"
+                    color="default"
+                    sx={{ width: "100%" }}
+                  />
+                ) : (
+                  <Chip
+                    label="Usuário"
+                    color="secondary"
+                    sx={{ width: "100%" }}
+                  />
+                ),
+            },
+          ]}
+        />
+      )}
     </BaseCard>
   );
 }

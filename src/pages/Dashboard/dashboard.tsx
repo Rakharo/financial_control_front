@@ -131,10 +131,6 @@ export default function Dashboard() {
     deleteCategory.mutate({ data: category });
   }
 
-  if (dashboardLoading && transactionLoading && categoryLoading) {
-    return <div>Carregando...</div>;
-  }
-
   return (
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" spacing={2}>
@@ -145,9 +141,6 @@ export default function Dashboard() {
             alignItems: "center",
             width: "100%",
             padding: "0 24px",
-            // backgroundColor: "secondary.dark",
-            // color: "secondary.contrastText",
-            // borderRadius: "1rem",
           }}
         >
           <BaseDatePicker
@@ -170,6 +163,7 @@ export default function Dashboard() {
       </Stack>
       <Summary
         data={dashboardData!}
+        loading={dashboardLoading}
         month={filterDate?.format("MMMM") ?? ""}
         year={filterDate?.year() || 0}
       />
@@ -177,6 +171,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, md: 7 }}>
           <LastTransactions
             data={transactionData?.transactions || []}
+            loading={transactionLoading}
             openDialog={() => setOpenTransaction(true)}
             editData={(data: iTransaction) => {
               setEditingTransaction(data);
@@ -197,6 +192,7 @@ export default function Dashboard() {
         <Grid size={{ xs: 12, md: 5 }}>
           <UserCategories
             data={categoryData?.categories || []}
+            loading={categoryLoading}
             page={categoriesPage || 1}
             limit={categoriesLimit || 10}
             totalPages={categoryData?.total || 0}
