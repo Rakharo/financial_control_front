@@ -1,55 +1,13 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
-
-import { useNavigate } from "react-router-dom";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useLogin } from "../../hooks/useLogin";
-import { useUser } from "../../contexts/UserContext";
-import { type LoginFormData, loginSchema } from "./utils/loginSchema";
-import { useAlert } from "../../contexts/AlertContext";
+import { Box } from "@mui/material";
+import BaseTabs from "../../components/global/BaseTabs";
+import LoginTab from "./components/loginTab";
+import SignUpTab from "./components/signUpTab";
+import BaseCard from "../../components/global/BaseCard";
+import { useState } from "react";
 
 export default function Login() {
-  const navigate = useNavigate();
-  const loginMutation = useLogin();
-  const { setAuth } = useUser();
-  const { showAlert } = useAlert();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  async function onSubmit(data: LoginFormData) {
-    const result = await loginMutation.mutateAsync(
-      { data: data },
-      {
-        onSuccess: () => {
-          navigate("/dashboard");
-
-          showAlert({
-            title: "Login realizado com sucesso!",
-            description: `Bem vindo(a), ${result.user.name}`,
-            severity: "success",
-          });
-        },
-      },
-    );
-
-    setAuth(result.access_token, result.refresh_token);
-  }
-
+  const [tab, setTab] = useState<string | number>("login");
+  const [prefillLogin, setPrefillLogin] = useState("");
   return (
     <Box
       sx={{
@@ -60,44 +18,44 @@ export default function Login() {
         padding: 2,
       }}
     >
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        style={{ width: "100%", maxWidth: 400 }}
+      <BaseCard
+        sx={{
+          width: "100%",
+          maxWidth: 480,
+          borderRadius: "1.5rem",
+          boxShadow: 3,
+        }}
+        cardTitle="Bem-vindo(a)!"
+        cardDescription="Entre ou crie sua conta"
+        centerTitle
+        contentStyle={{ gap: 2 }}
       >
-        <Card sx={{ width: "100%", maxWidth: 400 }}>
-          <CardContent
-            sx={{ display: "flex", flexDirection: "column", gap: 3 }}
-          >
-            <Typography variant="h5" textAlign="center">
-              Login
-            </Typography>
-
-            <TextField
-              label="Usuário"
-              autoFocus
-              {...register("login")}
-              error={!!errors.login}
-              helperText={errors.login?.message}
-            />
-
-            <TextField
-              label="Senha"
-              type="password"
-              {...register("password")}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-            />
-
-            <Button
-              variant="contained"
-              type="submit"
-              disabled={loginMutation.isPending}
-            >
-              Entrar
-            </Button>
-          </CardContent>
-        </Card>
-      </form>
+        <BaseTabs
+          value={tab}
+          onChangeTab={(tab) => setTab(tab)}
+          orientation="horizontal"
+          tabs={[
+            {
+              label: "Entrar",
+              value: "login",
+              render: () => <LoginTab defaultLogin={prefillLogin} />,
+            },
+            {
+              label: "Cadastre-se",
+              value: "signUp",
+              render: () => (
+                <SignUpTab
+                  goToLogin={() => setTab("login")}
+                  onSuccess={(login) => {
+                    setPrefillLogin(login);
+                    setTab("login");
+                  }}
+                />
+              ),
+            },
+          ]}
+        />
+      </BaseCard>
     </Box>
   );
 }

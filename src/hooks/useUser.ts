@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  createUser,
   deleteUser,
   getMe,
   updatePassword,
@@ -9,6 +10,7 @@ import { useAlert } from "../contexts/AlertContext";
 import type {
   iUpdatePassword,
   iUpdateUserRequest,
+  iUserRequest,
 } from "../interfaces/UserInterface";
 
 export function useMe() {
@@ -18,6 +20,27 @@ export function useMe() {
     queryFn: getMe,
     retry: 1,
     enabled: !!token,
+  });
+}
+
+export function useCreateUser() {
+  const { showAlert } = useAlert();
+  return useMutation({
+    mutationFn: ({ data }: { data: iUserRequest }) => createUser(data),
+    onSuccess: () => {
+      showAlert({
+        title: "Sucesso!",
+        description: `Usuário criado com sucesso!`,
+        severity: "success",
+      });
+    },
+    onError: (error) => {
+      showAlert({
+        title: "Erro!",
+        description: error.message || "Erro ao criar usuário!",
+        severity: "error",
+      });
+    },
   });
 }
 
@@ -71,8 +94,7 @@ export function useDeleteUser() {
 export function usePasswordUpdate() {
   const { showAlert } = useAlert();
   return useMutation({
-    mutationFn: ({ data }: { data: iUpdatePassword }) =>
-      updatePassword(data),
+    mutationFn: ({ data }: { data: iUpdatePassword }) => updatePassword(data),
     onSuccess: () => {
       showAlert({
         title: "Sucesso!",

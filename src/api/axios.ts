@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from "axios";
+import { triggerLogout } from "../auth/authEvents";
 
 export const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -16,46 +16,48 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/refresh")
     ) {
       originalRequest._retry = true;
 
       try {
-        const refreshToken =
-          localStorage.getItem("refreshToken");
+        const refreshToken = localStorage.getItem("refreshToken");
 
-        const response = await axios.post(
-          "http://localhost:8080/auth/refresh",
-          {
-            refresh_token: refreshToken,
-          }
-        );
+        const response = await api.post("/auth/refresh", {
+          refresh_token: refreshToken,
+        });
 
         const newAccessToken = response.data.access_token;
 
-        localStorage.setItem(
-          "accessToken",
-          newAccessToken
-        );
+        localStorage.setItem("accessToken", newAccessToken);
 
-        originalRequest.headers.Authorization =
-          `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return api(originalRequest);
       } catch (err) {
+        console.error(err);
+
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
 
-        window.location.href = "/";
+        triggerLogout();
       }
     }
 
+    const backendMessage = error.response?.data?.message || "Erro inesperado";
+
+    error.message = backendMessage;
+
     return Promise.reject(error);
-  }
+  },
 );

@@ -2,10 +2,16 @@ import { api } from "../api/axios";
 import type {
   iUpdatePassword,
   iUpdateUserRequest,
+  iUserRequest,
 } from "../interfaces/UserInterface";
 
 export async function getMe() {
   const response = await api.get("/user/me");
+  return response.data;
+}
+
+export async function createUser(user: iUserRequest) {
+  const response = await api.post("/register", user);
   return response.data;
 }
 

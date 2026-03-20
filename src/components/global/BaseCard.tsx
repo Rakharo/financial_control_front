@@ -72,15 +72,25 @@ export default function BaseCard(props: {
           <CardHeader
             title={props.cardTitle}
             subheader={props.cardDescription}
-            action={props.cardTitleAction && (
-                <BaseButton onClick={props.cardTitleOnClick} btnText={props.cardTitleBtnText} startIcon={props.cardTitleBtnIcon} />
-            )}
+            action={
+              props.cardTitleAction && (
+                <BaseButton
+                  onClick={props.cardTitleOnClick}
+                  btnText={props.cardTitleBtnText}
+                  startIcon={props.cardTitleBtnIcon}
+                />
+              )
+            }
             slotProps={
               props.centerTitle
                 ? {
                     title: {
                       textAlign: "center",
                       color: `${props.titleColor}`,
+                    },
+                    subheader: {
+                      textAlign: "center",
+                      color: props.subHeaderColor,
                     },
                   }
                 : {

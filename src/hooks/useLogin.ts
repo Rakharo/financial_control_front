@@ -14,7 +14,7 @@ export function useLogin() {
     onError: (error) => {
       showAlert({
         title: "Erro!",
-        description: error.message || "Credencias inválidas!",
+        description: error.message  || "Credencias inválidas!",
         severity: "error",
       });
     },

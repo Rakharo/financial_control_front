@@ -5,11 +5,15 @@ import BaseButton from "./BaseButton";
 import BaseTooltip from "./BaseTooltip";
 
 export default function BaseTabs(props: {
+  value?: string | number;
+  onChangeTab?: (value: string | number) => void;
+
   initialValue?: string | number;
   sx?: SxProps<Theme>;
   variant?: "fullWidth" | "scrollable" | "standard";
   orientation?: "horizontal" | "vertical";
   scrollButtons?: boolean;
+
   firstBtnText?: string;
   firstBtnColor?:
     | "primary"
@@ -19,6 +23,7 @@ export default function BaseTabs(props: {
     | "success"
     | "warning";
   firstBtnVariant?: "contained" | "outlined" | "text";
+
   secondBtnText?: string;
   secondBtnColor?:
     | "primary"
@@ -28,6 +33,7 @@ export default function BaseTabs(props: {
     | "success"
     | "warning";
   secondBtnVariant?: "contained" | "outlined" | "text";
+
   tabs: Array<{
     label: string;
     value: string | number;
@@ -36,6 +42,7 @@ export default function BaseTabs(props: {
     tooltipText?: string;
     render: () => React.ReactNode;
   }>;
+
   onPrev?: (currentIndex: number, data?: any) => Promise<void> | void;
   onNext?: (currentIndex: number, data?: any) => Promise<void> | void;
   onChange?: (
@@ -44,12 +51,21 @@ export default function BaseTabs(props: {
     tab: any,
   ) => void | Promise<void>;
 }) {
-  // Encontra o índice inicial baseado no initialValue
+  const isVertical = props.orientation === "vertical";
+
   const initialIndex = props.initialValue
     ? props.tabs.findIndex((tab) => tab.value === props.initialValue)
     : 0;
 
-  const [tabIndex, setTabIndex] = useState(initialIndex);
+  const isControlled = props.value !== undefined;
+
+  const [internalIndex, setInternalIndex] = useState(initialIndex);
+
+  const tabIndex = isControlled
+    ? props.tabs.findIndex((tab) => tab.value === props.value)
+    : internalIndex;
+
+  const currentTab = props.tabs[tabIndex];
 
   const handleChange = async (
     _: React.SyntheticEvent,
@@ -61,32 +77,63 @@ export default function BaseTabs(props: {
       await props.onChange(tabIndex, nextIndex, props.tabs[nextIndex]);
     }
 
-    setTabIndex(nextIndex);
+    if (props.onChangeTab) {
+      props.onChangeTab(newValue);
+    }
+
+    if (!isControlled) {
+      setInternalIndex(nextIndex);
+    }
   };
 
-  // Funções para navegação com callback
   const handlePrev = async () => {
-    if (props.onPrev) await props.onPrev(tabIndex, props.tabs[tabIndex]);
-    if (tabIndex > 0) setTabIndex(tabIndex - 1);
+    if (props.onPrev) await props.onPrev(tabIndex, currentTab);
+
+    if (tabIndex > 0) {
+      const newValue = props.tabs[tabIndex - 1].value;
+
+      if (props.onChangeTab) props.onChangeTab(newValue);
+      if (!isControlled) setInternalIndex(tabIndex - 1);
+    }
   };
+
   const handleNext = async () => {
-    if (props.onNext) await props.onNext(tabIndex, props.tabs[tabIndex]);
-    if (tabIndex < props.tabs.length - 1) setTabIndex(tabIndex + 1);
+    if (props.onNext) await props.onNext(tabIndex, currentTab);
+
+    if (tabIndex < props.tabs.length - 1) {
+      const newValue = props.tabs[tabIndex + 1].value;
+
+      if (props.onChangeTab) props.onChangeTab(newValue);
+      if (!isControlled) setInternalIndex(tabIndex + 1);
+    }
   };
 
   return (
-    <Box sx={{ width: "100%", display: "flex" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: isVertical ? "row" : "column",
+      }}
+    >
       <Tabs
-        value={props.tabs[tabIndex].value}
+        value={currentTab?.value}
         onChange={handleChange}
         variant={props.variant || "fullWidth"}
         orientation={props.orientation || "horizontal"}
         scrollButtons={props.scrollButtons}
+        TabIndicatorProps={{
+          style: {
+            height: 3,
+            borderRadius: 3,
+          },
+        }}
         sx={{
           ...props.sx,
           backgroundColor: "background.paper",
           borderRadius: "1rem",
-          minWidth: props.orientation === "vertical" ? 220 : "auto",
+          minWidth: isVertical ? 220 : "auto",
+          mb: !isVertical ? 2 : 0,
         }}
       >
         {props.tabs.map((tab) => {
@@ -98,6 +145,10 @@ export default function BaseTabs(props: {
               icon={tab.icon}
               iconPosition="start"
               disabled={tab.disabled}
+              sx={{
+                textTransform: "none",
+                fontWeight: 500,
+              }}
             />
           );
 
@@ -112,8 +163,17 @@ export default function BaseTabs(props: {
           return tabComponent;
         })}
       </Tabs>
-      <Box sx={{ flex: 1, ml: props.orientation === "vertical" ? 2 : 0 }}>
-        {props.tabs[tabIndex].render()}
+
+      <Box
+        sx={{
+          flex: 1,
+          ml: isVertical ? 2 : 0,
+          mt: !isVertical ? 1 : 0,
+          minHeight: 420,
+          transition: "all 0.25s ease",
+        }}
+      >
+        {currentTab?.render()}
 
         {props.scrollButtons && (
           <Box display="flex" justifyContent="space-between" mt={2}>

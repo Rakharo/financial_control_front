@@ -8,6 +8,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { AlertProvider } from "./contexts/AlertContext";
 import Profile from "./pages/Profile/profile";
+import AuthInitializer from "./auth/authInitializer";
 
 function App() {
   function AppContent() {
@@ -19,6 +20,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <AlertProvider>
+            <AuthInitializer />
             <Routes>
               {/* rota pública */}
               <Route path="/" element={<Login />} />
