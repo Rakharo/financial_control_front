@@ -7,6 +7,7 @@ import getTheme from "./themes/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import { AlertProvider } from "./contexts/AlertContext";
+import Profile from "./pages/Profile/profile";
 
 function App() {
   function AppContent() {
@@ -25,6 +26,7 @@ function App() {
               {/* rotas protegidas */}
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
               </Route>
             </Routes>
           </AlertProvider>

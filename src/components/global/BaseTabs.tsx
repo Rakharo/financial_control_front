@@ -41,7 +41,7 @@ export default function BaseTabs(props: {
   onChange?: (
     currentIndex: number,
     nextIndex: number,
-    tab: any
+    tab: any,
   ) => void | Promise<void>;
 }) {
   // Encontra o índice inicial baseado no initialValue
@@ -53,7 +53,7 @@ export default function BaseTabs(props: {
 
   const handleChange = async (
     _: React.SyntheticEvent,
-    newValue: string | number
+    newValue: string | number,
   ) => {
     const nextIndex = props.tabs.findIndex((tab) => tab.value === newValue);
 
@@ -75,14 +75,19 @@ export default function BaseTabs(props: {
   };
 
   return (
-    <Box sx={{ width: "100%", overflowX: "auto" }}>
+    <Box sx={{ width: "100%", display: "flex" }}>
       <Tabs
         value={props.tabs[tabIndex].value}
         onChange={handleChange}
         variant={props.variant || "fullWidth"}
         orientation={props.orientation || "horizontal"}
         scrollButtons={props.scrollButtons}
-        sx={{ ...props.sx, backgroundColor: "background.paper", borderRadius: "1rem" }}
+        sx={{
+          ...props.sx,
+          backgroundColor: "background.paper",
+          borderRadius: "1rem",
+          minWidth: props.orientation === "vertical" ? 220 : "auto",
+        }}
       >
         {props.tabs.map((tab) => {
           const tabComponent = (
@@ -96,7 +101,6 @@ export default function BaseTabs(props: {
             />
           );
 
-          
           if (tab.disabled && tab.tooltipText) {
             return (
               <BaseTooltip key={tab.value} content={tab.tooltipText} arrow>
@@ -108,8 +112,9 @@ export default function BaseTabs(props: {
           return tabComponent;
         })}
       </Tabs>
-      <Box mt={2}>
+      <Box sx={{ flex: 1, ml: props.orientation === "vertical" ? 2 : 0 }}>
         {props.tabs[tabIndex].render()}
+
         {props.scrollButtons && (
           <Box display="flex" justifyContent="space-between" mt={2}>
             <BaseButton

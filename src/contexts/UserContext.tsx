@@ -1,63 +1,47 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type { iUserResponse } from "../interfaces/UserInterface";
-import { getMe } from "../services/UserService";
+import { useMe } from "../hooks/useUser";
 
 type UserContextType = {
   user: iUserResponse | null;
   token: string | null;
-  setAuth: (
-    user: iUserResponse,
-    accessToken: string,
-    refreshToken: string,
-  ) => void;
+  setAuth: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
 };
 
 const UserContext = createContext<UserContextType | null>(null);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<iUserResponse | null>(null);
+  const { data: user } = useMe();
   const [token, setToken] = useState<string | null>(null);
 
-  function setAuth(
-    user: iUserResponse,
-    accessToken: string,
-    refreshToken: string,
-  ) {
-    setUser(user);
-
+  function setAuth(accessToken: string, refreshToken: string) {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
   }
 
   function logout() {
-    setUser(null);
     setToken(null);
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
   }
 
-  useEffect(() => {
-    async function loadUser() {
-      const token = localStorage.getItem("accessToken");
+  // useEffect(() => {
+  //   if (location.pathname === "/") {
+  //     async function loadUser() {
+  //       const token = localStorage.getItem("accessToken");
 
-      if (!token) return;
-
-      try {
-        const user = await getMe();
-        setUser(user);
-      } catch {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-      }
-    }
-
-    loadUser();
-  }, []);
+  //       if (!token) return;
+  //     }
+  //     loadUser();
+  //   }
+  // }, [location.pathname]);
 
   return (
-    <UserContext.Provider value={{ user, token, setAuth, logout }}>
+    <UserContext.Provider
+      value={{ user: user ?? null, token, setAuth, logout }}
+    >
       {children}
     </UserContext.Provider>
   );

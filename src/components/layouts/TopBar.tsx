@@ -12,13 +12,14 @@ import {
 import {
   AccountCircle,
   DarkMode,
+  Dashboard,
   ExitToApp,
   LightMode,
   Settings,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useUser } from "../../contexts/UserContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import BaseSwitch from "../global/BaseSwitch";
 import { useThemeMode } from "../../contexts/ThemeContext";
 import BaseTooltip from "../global/BaseTooltip";
@@ -62,6 +63,7 @@ function stringAvatar(name?: string) {
 
 export default function TopBar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useUser();
   const { mode, toggleMode } = useThemeMode();
 
@@ -90,7 +92,15 @@ export default function TopBar() {
       }}
     >
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="h6">Controle Financeiro</Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <Typography
+            variant="h6"
+            onClick={() => navigate("/dashboard")}
+            sx={{ cursor: "pointer" }}
+          >
+            Controle Financeiro
+          </Typography>
+        </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <BaseTooltip content={mode === "dark" ? "Escuro" : "Claro"}>
@@ -109,8 +119,10 @@ export default function TopBar() {
                     transform: "translateY(-3px)",
                   },
                 }}
-                icon={<LightMode fontSize="small" sx={{color: "yellow"}} />}
-                checkedIcon={<DarkMode fontSize="small" sx={{color: "white"}} />}
+                icon={<LightMode fontSize="small" sx={{ color: "yellow" }} />}
+                checkedIcon={
+                  <DarkMode fontSize="small" sx={{ color: "white" }} />
+                }
               />
             </span>
           </BaseTooltip>
@@ -133,16 +145,30 @@ export default function TopBar() {
               horizontal: "right",
             }}
           >
-            <MenuItem
-              onClick={() => {
-                handleCloseMenu();
-                navigate("/profile");
-              }}
-              sx={{ gap: 1 }}
-            >
-              <AccountCircle fontSize="small" color="primary" />
-              Perfil
-            </MenuItem>
+            {location.pathname !== "/dashboard" && (
+              <MenuItem
+                onClick={() => {
+                  handleCloseMenu();
+                  navigate("/dashboard");
+                }}
+                sx={{ gap: 1 }}
+              >
+                <Dashboard fontSize="small" color="primary" />
+                Dashboard
+              </MenuItem>
+            )}
+            {location.pathname !== "/profile" && (
+              <MenuItem
+                onClick={() => {
+                  handleCloseMenu();
+                  navigate("/profile");
+                }}
+                sx={{ gap: 1 }}
+              >
+                <AccountCircle fontSize="small" color="primary" />
+                Perfil
+              </MenuItem>
+            )}
 
             <MenuItem
               onClick={() => {

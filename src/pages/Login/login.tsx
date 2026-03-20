@@ -47,7 +47,7 @@ export default function Login() {
       },
     );
 
-    setAuth(result.user, result.access_token, result.refresh_token);
+    setAuth(result.access_token, result.refresh_token);
   }
 
   return (

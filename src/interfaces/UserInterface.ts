@@ -11,3 +11,15 @@ export interface iUserResponse {
   email: string;
   login: string;
 }
+
+export interface iUpdateUserRequest {
+  name: string;
+  email: string;
+  login: string;
+}
+
+export interface iUpdatePassword {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

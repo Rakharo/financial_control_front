@@ -26,3 +26,20 @@ body {
 *::after {
   box-sizing: border-box;
 }
+
+
+/* Esconde o botão de mostrar senha nativo do Chrome/Safari mobile */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-input-password-toggle-button {
+display: none !important;
+}
+
+input[type="password"]::-webkit-input-decoration-container {
+display: none !important;
+}
+
+input[type="password"]::-webkit-textfield-decoration-container {
+display: none !important;
+}
