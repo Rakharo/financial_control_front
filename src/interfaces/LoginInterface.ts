@@ -5,6 +5,10 @@ export interface iLoginRequest {
   password: string;
 }
 
+export interface iGoogleLoginRequest {
+  googleToken: string;
+}
+
 export interface iLoginResponse {
     access_token: string;
     refresh_token: string;

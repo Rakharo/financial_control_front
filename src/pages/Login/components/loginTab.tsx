@@ -9,10 +9,14 @@ import { type LoginFormData, loginSchema } from "../utils/loginSchema";
 import { useAlert } from "../../../contexts/AlertContext";
 import BaseForm from "../../../components/global/BaseForm";
 import BaseInput from "../../../components/global/BaseInput";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import BaseButton from "../../../components/global/BaseButton";
+import { GoogleLogin } from "@react-oauth/google";
 
-export default function LoginTab(props: { defaultLogin: string }) {
+export default function LoginTab(props: {
+  defaultLogin: string;
+  onGoogleLogin: (credential: string) => void;
+}) {
   const navigate = useNavigate();
   const loginMutation = useLogin();
   const { setAuth } = useUser();
@@ -30,25 +34,20 @@ export default function LoginTab(props: { defaultLogin: string }) {
   });
 
   async function onSubmit(data: LoginFormData) {
-    try{
-        const result = await loginMutation.mutateAsync(
-          { data: data },
-          {
-            onSuccess: () => {
-              navigate("/dashboard");
-    
-              showAlert({
-                title: "Login realizado com sucesso!",
-                description: `Bem vindo(a), ${result.user.name}`,
-                severity: "success",
-              });
-              setAuth(result.access_token, result.refresh_token);
-            },
-          },
-        );
+    try {
+      const result = await loginMutation.mutateAsync(data);
 
+      setAuth(result.access_token, result.refresh_token);
+
+      navigate("/dashboard");
+
+      showAlert({
+        title: "Login realizado com sucesso!",
+        description: `Bem vindo(a), ${result.user.name}`,
+        severity: "success",
+      });
     } catch (error) {
-        console.error(error)
+      console.error(error);
     }
   }
 
@@ -56,12 +55,12 @@ export default function LoginTab(props: { defaultLogin: string }) {
     <>
       <Box
         sx={{
-          border: "1px solid rgba(255,255,255,0.2)",
-          padding: 2,
-          borderRadius: "1rem",
+          padding: 1,
           display: "flex",
           flexDirection: "column",
+          justifyContent: "space-evenly",
           gap: 2,
+          minHeight: 420,
         }}
       >
         <BaseForm methods={form} onSubmit={form.handleSubmit(onSubmit)}>
@@ -94,12 +93,36 @@ export default function LoginTab(props: { defaultLogin: string }) {
           />
         </BaseForm>
 
-        <BaseButton
-          btnText="Entrar"
-          onClick={form.handleSubmit(onSubmit)}
-          disabled={loginMutation.isPending}
-          sx={{ alignSelf: "flex-end" }}
-        />
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <BaseButton
+            btnText="Entrar"
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={loginMutation.isPending}
+          />
+
+          <Typography sx={{ textAlign: "center", opacity: 0.6, fontSize: 14 }}>
+            ou continue com
+          </Typography>
+
+          {!loginMutation.isPending && (
+            <GoogleLogin
+              onSuccess={(res) => {
+                if (res.credential) {
+                  props.onGoogleLogin(res.credential);
+                }
+              }}
+              onError={() => {
+                console.log("Erro no login com Google");
+              }}
+              useOneTap={false}
+              theme="outline"
+              size="large"
+              text="signin_with"
+              shape="rectangular"
+              width="100%"
+            />
+          )}
+        </Box>
       </Box>
     </>
   );

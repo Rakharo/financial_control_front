@@ -9,11 +9,16 @@ import { Box, Collapse, Typography } from "@mui/material";
 import { CheckBox, CropSquare } from "@mui/icons-material";
 import BaseButton from "../../../components/global/BaseButton";
 import { useCreateUser } from "../../../hooks/useUser";
+import { GoogleLogin } from "@react-oauth/google";
+import { useAlert } from "../../../contexts/AlertContext";
 
 export default function SignUpTab(props: {
   goToLogin: () => void;
   onSuccess: (login: string) => void;
+  onGoogleLogin: (credential: string) => void;
+  isGoogleLoading: boolean;
 }) {
+  const { showAlert } = useAlert();
   const createUser = useCreateUser();
 
   const defaultValues: SignUpFormData = {
@@ -66,10 +71,10 @@ export default function SignUpTab(props: {
     }
   }
 
-  function handleCancelSignUp() {
-    form.reset(defaultValues);
-    props.goToLogin();
-  }
+//   function handleCancelSignUp() {
+//     form.reset(defaultValues);
+//     props.goToLogin();
+//   }
 
   return (
     <>
@@ -80,7 +85,9 @@ export default function SignUpTab(props: {
           borderRadius: "1rem",
           display: "flex",
           flexDirection: "column",
+          justifyContent: "space-between",
           gap: 2,
+          minHeight: 420
         }}
       >
         <BaseForm methods={form} onSubmit={form.handleSubmit(onSubmit)}>
@@ -160,19 +167,54 @@ export default function SignUpTab(props: {
             </Box>
           </Collapse>
         </BaseForm>
-        <Box
+        
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <BaseButton
+            btnText="Criar conta"
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={props.isGoogleLoading}
+          />
+
+          <Typography sx={{ textAlign: "center", opacity: 0.6, fontSize: 14 }}>
+            ou continue com
+          </Typography>
+
+          {!props.isGoogleLoading && (
+            <GoogleLogin
+              onSuccess={(res) => {
+                if (res.credential) {
+                  props.onGoogleLogin(res.credential);
+                }
+              }}
+              onError={() => {
+                showAlert({
+                    title: "Erro!",
+                    description: "Erro ao autenticar com Google",
+                    severity: "error"
+                })
+              }}
+              useOneTap={false}
+              theme="outline"
+              size="large"
+              text="continue_with"
+              shape="rectangular"
+              width="100%"
+            />
+          )}
+        </Box>
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: "space-between",
             marginTop: form.watch("password", "") !== "" ? 2 : 0,
           }}
         >
-          <BaseButton btnText="Cancelar" onClick={handleCancelSignUp} />
+          <BaseButton btnText="Cancelar" color="neutral" variant="outlined" onClick={handleCancelSignUp} />
           <BaseButton
             btnText="Criar conta"
             onClick={form.handleSubmit(onSubmit)}
           />
-        </Box>
+        </Box> */}
       </Box>
     </>
   );
