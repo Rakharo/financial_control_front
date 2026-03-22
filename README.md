@@ -2,6 +2,9 @@
 
 Interface web para controle financeiro pessoal, permitindo gerenciamento de receitas, despesas, categorias e visualização de dados analíticos, com foco em experiência do usuário e validação robusta de formulários.
 
+###Login
+![Login](./src/assets/prints/login.png)
+
 ---
 
 ## Tecnologias
@@ -102,6 +105,10 @@ error.response.data
 * Campos controlados com `Controller`
 * Integração com componentes customizados
 
+
+### Formulário Transaction
+![Form](./src/assets/prints/transactionForm.png)
+
 ---
 
 ## Componentes principais
@@ -141,6 +148,17 @@ error.response.data
 * Criação/Edição de Categorias
 * Dashboard com resumos de despesas
 * Perfil com possibilidade de alteração de dados e senha
+
+
+### Dashboard
+![Dashboard](./src/assets/prints/dashboard.png)
+
+### Profile
+![Profile](./src/assets/prints/profile.png)
+
+### Tables
+![Tables](./src/assets/prints/history.png)
+
 
 ---
 
