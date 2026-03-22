@@ -104,7 +104,7 @@ error.response.data
 
 ---
 
-## 🧩 Componentes principais
+## Componentes principais
 
 ### BaseInput
 
@@ -126,7 +126,7 @@ error.response.data
 
 ---
 
-## 🎨 UI/UX
+## UI/UX
 
 * Tela de login com abas:
   * Login
