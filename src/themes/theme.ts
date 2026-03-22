@@ -203,7 +203,7 @@ declare module "@mui/material/IconButton" {
   }
 }
 
-const radius = "0.5rem";
+const radius = "1.5rem";
 
 export const getTheme = (mode: "light" | "dark") => {
   const tokens = mode === "light" ? lightTokens : darkTokens;

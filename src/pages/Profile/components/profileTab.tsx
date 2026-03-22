@@ -1,111 +1,122 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 import BaseCard from "../../../components/global/BaseCard";
 import BaseButton from "../../../components/global/BaseButton";
-import type {
-  iUpdateUserRequest,
-  iUserResponse,
-} from "../../../interfaces/UserInterface";
+import type { iUserResponse } from "../../../interfaces/UserInterface";
 import { Email, Smartphone } from "@mui/icons-material";
-import ProfileDialog from "../forms/profileDialog";
 import { useState } from "react";
-import { useDeleteUser, useUpdateUser } from "../../../hooks/useUser";
 import ConfirmationDialog from "../../../components/alert/ConfirmationDialog";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../contexts/UserContext";
+import { useLogout } from "../../../hooks/useAuth";
 
-export default function ProfileTab(props: { user: iUserResponse }) {
+export default function ProfileTab(props: {
+  user: iUserResponse;
+  openDialog: () => void;
+}) {
+  //REACT ROUTER
   const navigate = useNavigate();
+
+  //CONTEXTS
   const { logout } = useUser();
-  const [openDialog, setOpenDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
-  const updateUser = useUpdateUser();
-  const deleteUser = useDeleteUser();
+  //STATES
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
 
-  function handleUpdateUser(user: iUpdateUserRequest) {
-    updateUser.mutate(
-      { data: user },
-      { onSuccess: () => setOpenDialog(false) },
+  //MUTATIONS
+  const logoutMutation = useLogout();
+
+  function handleEndSession() {
+    const token = localStorage.getItem("refreshToken");
+    if (!token) {
+      return;
+    }
+    logoutMutation.mutate(
+      { refresh_token: token },
+      {
+        onSuccess: () => {
+          logout();
+          navigate("/");
+        },
+      },
     );
   }
 
-  function handleDeleteAccount() {
-    deleteUser.mutate(undefined, {
-      onSuccess: () => {
-        logout();
-        navigate("/");
-      },
-    });
-  }
-
   return (
-    <Grid container spacing={2} sx={{ minHeight: 300 }}>
-      <Grid size={{ xs: 12 }}>
-        <BaseCard
-          cardTitle={
+    <BaseCard
+      cardTitle={
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Email fontSize="medium" color="secondary" />
+          Dados da conta
+        </Box>
+      }
+    >
+      <Stack spacing={2} divider={<Divider flexItem />}>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Email fontSize="medium" color="secondary" />
-              Dados da conta
+              <Typography variant="body2">Nome:</Typography>
+              <Typography variant="body1">{props.user?.name ?? ""}</Typography>
             </Box>
-          }
-        >
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography variant="body2">
-                Nome: {props.user?.name ?? ""}
-              </Typography>
-              <Typography variant="body2">
-                Endereço de e-mail: {props.user?.email ?? ""}
-              </Typography>
-              <BaseButton
-                btnText="Alterar dados"
-                variant="outlined"
-                size="small"
-                color="secondary"
-                onClick={() => setOpenDialog(true)}
-                sx={{ mt: 2 }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }} justifyItems="end">
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body2">Endereço de e-mail:</Typography>
+              <Typography variant="body1">{props.user?.email ?? ""}</Typography>
+            </Box>
+            <BaseButton
+              btnText="Alterar dados"
+              variant="outlined"
+              size="small"
+              color="secondary"
+              onClick={props.openDialog}
+              sx={{ mt: 2 }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }} justifyItems="end">
+            <Box>
               <Typography
                 variant="body2"
                 sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
                 <Smartphone fontSize="small" color="secondary" />
-                Tel.: Terminado em {"07"}
+                {props.user?.phone?.length
+                  ? props.user?.phone.length <= 0
+                    ? "Nenhum telefone cadastrado"
+                    : `Tel.: Terminado em ${props.user?.phone?.slice(-4) ?? ""}`
+                  : "Nenhum telefone cadastrado"}
               </Typography>
-            </Grid>
+              {!props.user?.phone ? (
+                <BaseButton
+                  btnText="Adicionar telefone"
+                  variant="text"
+                  color="secondary"
+                  onClick={props.openDialog}
+                  sx={{ mt: 2 }}
+                />
+              ) : (
+                <></>
+              )}
+            </Box>
           </Grid>
-        </BaseCard>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <BaseCard>
+        </Grid>
+
+        <Box>
           <BaseButton
-            btnText="Excluir conta"
-            color="error"
+            btnText="Finalizar sessão"
+            color="warning"
             variant="text"
-            onClick={() => setOpenDeleteDialog(true)}
+            onClick={() => setOpenLogoutDialog(true)}
             sx={{ alignSelf: "flex-start" }}
           />
-        </BaseCard>
-      </Grid>
-
-      <ProfileDialog
-        open={openDialog}
-        initialData={props.user}
-        onClose={() => setOpenDialog(false)}
-        onSubmit={handleUpdateUser}
-      />
+        </Box>
+      </Stack>
 
       <ConfirmationDialog
-        open={openDeleteDialog}
-        variant="delete"
-        title="Excluir conta!"
-        description="Essa ação não pode ser revertida. Se confirmado, todos os dados serão perdidos!"
-        highlight="Tem certeza que deseja continuar?"
-        onCancel={() => setOpenDeleteDialog(false)}
-        onConfirm={handleDeleteAccount}
+        open={openLogoutDialog}
+        variant="warning"
+        title="Fazer logout"
+        description="Tem certeza que deseja sair?"
+        onCancel={() => setOpenLogoutDialog(false)}
+        onConfirm={handleEndSession}
       />
-    </Grid>
+    </BaseCard>
   );
 }

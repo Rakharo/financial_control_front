@@ -27,17 +27,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("refreshToken");
   }
 
-  // useEffect(() => {
-  //   if (location.pathname === "/") {
-  //     async function loadUser() {
-  //       const token = localStorage.getItem("accessToken");
-
-  //       if (!token) return;
-  //     }
-  //     loadUser();
-  //   }
-  // }, [location.pathname]);
-
   return (
     <UserContext.Provider
       value={{ user: user ?? null, token, setAuth, logout }}

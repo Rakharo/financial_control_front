@@ -9,7 +9,7 @@ import bgImage from "../../assets/images/loginBackground.jpg";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../contexts/AlertContext";
 import { useUser } from "../../contexts/UserContext";
-import { useLogin } from "../../hooks/useLogin";
+import { useLogin } from "../../hooks/useAuth";
 
 export default function Login() {
   const { setAuth } = useUser();

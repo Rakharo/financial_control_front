@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/incompatible-library */
 
 import { Controller, useForm } from "react-hook-form";
@@ -5,12 +6,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import BaseForm from "../../../components/global/BaseForm";
 import BaseInput from "../../../components/global/BaseInput";
 import { signUpSchema, type SignUpFormData } from "../utils/signUpSchema";
-import { Box, Collapse, Typography } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Popper,
+  Portal,
+  Typography,
+} from "@mui/material";
 import { CheckBox, CropSquare } from "@mui/icons-material";
 import BaseButton from "../../../components/global/BaseButton";
 import { useCreateUser } from "../../../hooks/useUser";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAlert } from "../../../contexts/AlertContext";
+import { useState } from "react";
 
 export default function SignUpTab(props: {
   goToLogin: () => void;
@@ -19,12 +27,13 @@ export default function SignUpTab(props: {
   isGoogleLoading: boolean;
 }) {
   const { showAlert } = useAlert();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const createUser = useCreateUser();
 
   const defaultValues: SignUpFormData = {
     name: "",
     email: "",
-    login: "",
+    phone: "",
     password: "",
     // confirmPassword: "",
   };
@@ -34,6 +43,17 @@ export default function SignUpTab(props: {
     defaultValues,
     mode: "onSubmit",
   });
+
+  const handleFocus = (event: React.FocusEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleBlur = () => {
+    // pequeno delay pra permitir interação suave
+    setTimeout(() => setAnchorEl(null), 100);
+  };
+
+  const open = Boolean(anchorEl);
 
   const password = form.watch("password", "");
 
@@ -62,7 +82,7 @@ export default function SignUpTab(props: {
           onSuccess: () => {
             form.reset(defaultValues);
             props.goToLogin();
-            props.onSuccess(data.login);
+            props.onSuccess(data.email);
           },
         },
       );
@@ -71,23 +91,16 @@ export default function SignUpTab(props: {
     }
   }
 
-//   function handleCancelSignUp() {
-//     form.reset(defaultValues);
-//     props.goToLogin();
-//   }
-
   return (
     <>
       <Box
         sx={{
-          border: "1px solid rgba(255,255,255,0.2)",
-          padding: 2,
-          borderRadius: "1rem",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
+          padding: 1,
           gap: 2,
-          minHeight: 420
+          height: 420,
         }}
       >
         <BaseForm methods={form} onSubmit={form.handleSubmit(onSubmit)}>
@@ -120,14 +133,14 @@ export default function SignUpTab(props: {
             )}
           />
           <Controller
-            name="login"
+            name="phone"
             control={form.control}
             render={({ field, fieldState }) => (
               <BaseInput
                 {...field}
-                label="Login"
-                placeholder="Digite um nome de usuário"
-                required
+                label="Telefone"
+                placeholder="Digite seu número de celular"
+                mask="(00) 00000-0000"
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
               />
@@ -144,77 +157,83 @@ export default function SignUpTab(props: {
                 required
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
+                onFocus={(e) => handleFocus(e)}
+                onBlur={() => {
+                  field.onBlur();
+                  handleBlur();
+                }}
               />
             )}
           />
 
           {/* Regras de senha */}
-          <Collapse in={password !== ""}>
-            <Box>
-              {passwordRules.map((rule) => (
-                <Box
-                  key={rule.label}
-                  sx={{ display: "flex", alignItems: "center" }}
-                >
-                  {rule.test(password) ? (
-                    <CheckBox color="secondary" />
-                  ) : (
-                    <CropSquare color="secondary" />
-                  )}
-                  <Typography>{rule.label}</Typography>
-                </Box>
-              ))}
-            </Box>
-          </Collapse>
-        </BaseForm>
-        
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <BaseButton
-            btnText="Criar conta"
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={props.isGoogleLoading}
-          />
-
-          <Typography sx={{ textAlign: "center", opacity: 0.6, fontSize: 14 }}>
-            ou continue com
-          </Typography>
-
-          {!props.isGoogleLoading && (
-            <GoogleLogin
-              onSuccess={(res) => {
-                if (res.credential) {
-                  props.onGoogleLogin(res.credential);
-                }
+          <Portal>
+            <Popper
+              open={open}
+              anchorEl={anchorEl}
+              placement="bottom-start"
+              {...({ strategy: "fixed" } as any)}
+              sx={{
+                zIndex: 9999,
+                position: "fixed !important",
               }}
-              onError={() => {
-                showAlert({
+            >
+              <Paper
+                sx={{ p: 2, mt: 1, minWidth: 250, boxShadow: 3 }}
+              >
+                {passwordRules.map((rule) => (
+                  <Box
+                    key={rule.label}
+                    sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                  >
+                    {rule.test(password) ? (
+                      <CheckBox color="secondary" />
+                    ) : (
+                      <CropSquare color="secondary" />
+                    )}
+                    <Typography variant="body2">{rule.label}</Typography>
+                  </Box>
+                ))}
+              </Paper>
+            </Popper>
+          </Portal>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <BaseButton
+              btnText="Criar conta"
+              type="submit"
+              disabled={props.isGoogleLoading}
+            />
+
+            <Typography
+              sx={{ textAlign: "center", opacity: 0.6, fontSize: 14 }}
+            >
+              ou continue com
+            </Typography>
+
+            {!props.isGoogleLoading && (
+              <GoogleLogin
+                onSuccess={(res) => {
+                  if (res.credential) {
+                    props.onGoogleLogin(res.credential);
+                  }
+                }}
+                onError={() => {
+                  showAlert({
                     title: "Erro!",
                     description: "Erro ao autenticar com Google",
-                    severity: "error"
-                })
-              }}
-              useOneTap={false}
-              theme="outline"
-              size="large"
-              text="continue_with"
-              shape="rectangular"
-              width="100%"
-            />
-          )}
-        </Box>
-        {/* <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: form.watch("password", "") !== "" ? 2 : 0,
-          }}
-        >
-          <BaseButton btnText="Cancelar" color="neutral" variant="outlined" onClick={handleCancelSignUp} />
-          <BaseButton
-            btnText="Criar conta"
-            onClick={form.handleSubmit(onSubmit)}
-          />
-        </Box> */}
+                    severity: "error",
+                  });
+                }}
+                useOneTap={false}
+                theme="outline"
+                size="large"
+                text="continue_with"
+                shape="pill"
+                width="100%"
+              />
+            )}
+          </Box>
+        </BaseForm>
       </Box>
     </>
   );

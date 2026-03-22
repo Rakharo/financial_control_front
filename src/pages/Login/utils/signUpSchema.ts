@@ -3,7 +3,7 @@ import z from "zod";
 export const signUpSchema = z.object({
   name: z.string().min(1, "Nome obrigatório"),
   email: z.email("Email inválido"),
-  login: z.string().min(1, "Login obrigatório"),
+  phone: z.string(),
   password: z
     .string()
     .min(8, "Pelo menos 8 caracteres")

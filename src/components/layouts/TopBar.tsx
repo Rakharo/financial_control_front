@@ -23,6 +23,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import BaseSwitch from "../global/BaseSwitch";
 import { useThemeMode } from "../../contexts/ThemeContext";
 import BaseTooltip from "../global/BaseTooltip";
+import { useLogout } from "../../hooks/useAuth";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -70,6 +71,9 @@ export default function TopBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
+  //MUTATIONS
+  const logoutMutation = useLogout();
+
   function handleOpenMenu(event: React.MouseEvent<HTMLElement>) {
     setAnchorEl(event.currentTarget);
   }
@@ -79,8 +83,19 @@ export default function TopBar() {
   }
 
   function handleLogout() {
-    logout();
-    navigate("/");
+    const token = localStorage.getItem("refreshToken");
+    if (!token) {
+      return;
+    }
+    logoutMutation.mutate(
+      { refresh_token: token },
+      {
+        onSuccess: () => {
+          logout();
+          navigate("/");
+        },
+      },
+    );
   }
 
   return (

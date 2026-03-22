@@ -13,12 +13,14 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import BaseButton from "./BaseButton";
-import InputMask from "react-input-mask";
+import { IMaskInput } from "react-imask";
 
 export default function BaseInput(props: {
   label?: string;
   value?: string | number;
   onChange?: (value: any) => void;
+  onFocus?: (event: React.FocusEvent<HTMLElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLElement>) => void;
   inputRef?: React.Ref<HTMLInputElement>;
   placeholder?: string;
   size?: "small" | "medium";
@@ -42,6 +44,7 @@ export default function BaseInput(props: {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = props.type === "password";
   const isFile = props.type === "file";
+
   const inputType = isPassword
     ? showPassword
       ? "text"
@@ -58,7 +61,6 @@ export default function BaseInput(props: {
         endAdornment: (
           <InputAdornment position="end">
             <IconButton
-              aria-label="toggle password visibility"
               onClick={() => setShowPassword((show) => !show)}
               edge="end"
             >
@@ -74,37 +76,53 @@ export default function BaseInput(props: {
     },
   };
 
-  // Função para renderizar o TextField, aceitando props extras (como onChange do InputMask)
-  const renderTextField = (inputProps: any = {}) => (
-    <TextField
-      fullWidth
-      sx={{ ...props.sx }}
-      size={props.size || "medium"}
-      value={props.value || ""}
-      label={props.label}
-      placeholder={props.placeholder}
-      required={props.required}
-      variant="outlined"
-      color={props.color || "primary"}
-      // Só passa o onChange se NÃO estiver usando máscara
-      onChange={
-        props.mask
-          ? inputProps.onChange // Vem do InputMask
-          : (e) => props.onChange!(e.target.value)
-      }
-      error={props.error}
-      helperText={props.helperText}
-      type={inputType}
-      slotProps={slotProps}
-      disabled={props.disabled}
-      multiline={props.multiline}
-      minRows={props.minRows}
-      maxRows={props.maxRows}
-      {...inputProps} // Outros props do InputMask
-    />
-  );
+  //Com máscara (IMask)
+  if (props.mask) {
+    return (
+      <FormControl fullWidth>
+        <TextField
+          fullWidth
+          sx={{ ...props.sx }}
+          size={props.size || "medium"}
+          value={props.value || ""}
+          label={props.label}
+          placeholder={props.placeholder}
+          required={props.required}
+          variant="outlined"
+          color={props.color || "primary"}
+          error={props.error}
+          helperText={props.helperText}
+          type={inputType}
+          disabled={props.disabled}
+          multiline={props.multiline}
+          minRows={props.minRows}
+          maxRows={props.maxRows}
+          onFocus={props.onFocus}
+          onBlur={props.onBlur}
+          slotProps={{
+            ...slotProps,
+            inputLabel: {
+              ...props.slotProps?.inputLabel,
+              shrink: Boolean(props.value && props.value.toString().length > 0),
+            },
+            input: {
+              ...slotProps.input,
+              inputComponent: IMaskInput as any,
+              inputProps: {
+                mask: props.mask,
+                onAccept: (value: unknown) => {
+                  props.onChange?.(String(value));
+                },
+                overwrite: true,
+              },
+            },
+          }}
+        />
+      </FormControl>
+    );
+  }
 
-  // Renderização especial para input file
+  //File input
   if (isFile) {
     return (
       <FormControl fullWidth>
@@ -119,7 +137,7 @@ export default function BaseInput(props: {
           onChange={(e) => {
             const file = e.target.files?.[0];
             setSelectedFileName(file ? file.name : "");
-            props.onChange!(file);
+            props.onChange?.(file);
           }}
         />
         <label htmlFor={`base-input-file-${props.label}`}>
@@ -149,20 +167,31 @@ export default function BaseInput(props: {
     );
   }
 
+  //Input normal (sem máscara)
   return (
     <FormControl fullWidth>
-      {props.mask ? (
-        <InputMask
-          mask={props.mask}
-          value={props.value}
-          onChange={(e) => props.onChange!(e.target.value)}
-          disabled={props.disabled}
-        >
-          {(inputProps: any) => renderTextField(inputProps)}
-        </InputMask>
-      ) : (
-        renderTextField()
-      )}
+      <TextField
+        fullWidth
+        sx={{ ...props.sx }}
+        size={props.size || "medium"}
+        value={props.value || ""}
+        label={props.label}
+        placeholder={props.placeholder}
+        required={props.required}
+        variant="outlined"
+        color={props.color || "primary"}
+        onChange={(e) => props.onChange?.(e.target.value)}
+        error={props.error}
+        helperText={props.helperText}
+        type={inputType}
+        slotProps={slotProps}
+        disabled={props.disabled}
+        multiline={props.multiline}
+        minRows={props.minRows}
+        maxRows={props.maxRows}
+        onFocus={props.onFocus}
+        onBlur={props.onBlur}
+      />
     </FormControl>
   );
 }

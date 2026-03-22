@@ -18,7 +18,7 @@ export default function ProfileDialog(props: {
   const defaultValues: ProfileFormData = {
     name: "",
     email: "",
-    login: "",
+    phone: "",
     ...props.initialData,
   };
 
@@ -86,13 +86,13 @@ export default function ProfileDialog(props: {
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <Controller
-              name="login"
+              name="phone"
               control={form.control}
               render={({ field, fieldState }) => (
                 <BaseInput
                   {...field}
-                  label="Login"
-                  required
+                  label="Telefone"
+                  mask="(00) 00000-0000"
                   error={!!fieldState.error}
                   helperText={fieldState.error?.message}
                 />

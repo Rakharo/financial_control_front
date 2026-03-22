@@ -122,12 +122,6 @@ export default function BaseTabs(props: {
         variant={props.variant || "fullWidth"}
         orientation={props.orientation || "horizontal"}
         scrollButtons={props.scrollButtons}
-        TabIndicatorProps={{
-          style: {
-            height: 3,
-            borderRadius: 3,
-          },
-        }}
         sx={{
           ...props.sx,
           backgroundColor: "background.paper",

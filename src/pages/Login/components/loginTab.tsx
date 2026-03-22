@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useLogin } from "../../../hooks/useLogin";
+import { useLogin } from "../../../hooks/useAuth";
 import { useUser } from "../../../contexts/UserContext";
 import { type LoginFormData, loginSchema } from "../utils/loginSchema";
 import { useAlert } from "../../../contexts/AlertContext";
@@ -58,19 +58,18 @@ export default function LoginTab(props: {
           padding: 1,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-evenly",
           gap: 2,
           minHeight: 420,
         }}
       >
         <BaseForm methods={form} onSubmit={form.handleSubmit(onSubmit)}>
           <Controller
-            name="login"
+            name="email"
             control={form.control}
             render={({ field, fieldState }) => (
               <BaseInput
                 {...field}
-                label="Login"
+                label="E-mail"
                 required
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
@@ -91,38 +90,39 @@ export default function LoginTab(props: {
               />
             )}
           />
-        </BaseForm>
-
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <BaseButton
-            btnText="Entrar"
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={loginMutation.isPending}
-          />
-
-          <Typography sx={{ textAlign: "center", opacity: 0.6, fontSize: 14 }}>
-            ou continue com
-          </Typography>
-
-          {!loginMutation.isPending && (
-            <GoogleLogin
-              onSuccess={(res) => {
-                if (res.credential) {
-                  props.onGoogleLogin(res.credential);
-                }
-              }}
-              onError={() => {
-                console.log("Erro no login com Google");
-              }}
-              useOneTap={false}
-              theme="outline"
-              size="large"
-              text="signin_with"
-              shape="rectangular"
-              width="100%"
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, marginTop: "5em !important"}}>
+            <BaseButton
+              btnText="Entrar"
+              type="submit"
+              disabled={loginMutation.isPending}
             />
-          )}
-        </Box>
+
+            <Typography
+              sx={{ textAlign: "center", opacity: 0.6, fontSize: 14 }}
+            >
+              ou continue com
+            </Typography>
+
+            {!loginMutation.isPending && (
+              <GoogleLogin
+                onSuccess={(res) => {
+                  if (res.credential) {
+                    props.onGoogleLogin(res.credential);
+                  }
+                }}
+                onError={() => {
+                  console.log("Erro no login com Google");
+                }}
+                useOneTap={false}
+                theme="outline"
+                size="large"
+                text="signin_with"
+                shape="pill"
+                width="100%"
+              />
+            )}
+          </Box>
+        </BaseForm>
       </Box>
     </>
   );

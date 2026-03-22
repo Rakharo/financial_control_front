@@ -1,6 +1,5 @@
 import { api } from "../api/axios";
 import type {
-  iUpdatePassword,
   iUpdateUserRequest,
   iUserRequest,
 } from "../interfaces/UserInterface";
@@ -22,10 +21,5 @@ export async function updateUser(user: iUpdateUserRequest) {
 
 export async function deleteUser() {
   const response = await api.delete("/user");
-  return response.data;
-}
-
-export async function updatePassword(password: iUpdatePassword) {
-  const response = await api.put("/user/password", password);
   return response.data;
 }

@@ -3,12 +3,10 @@ import {
   createUser,
   deleteUser,
   getMe,
-  updatePassword,
   updateUser,
 } from "../services/UserService";
 import { useAlert } from "../contexts/AlertContext";
 import type {
-  iUpdatePassword,
   iUpdateUserRequest,
   iUserRequest,
 } from "../interfaces/UserInterface";
@@ -85,27 +83,6 @@ export function useDeleteUser() {
       showAlert({
         title: "Erro!",
         description: error.message || "Erro ao excluir conta!",
-        severity: "error",
-      });
-    },
-  });
-}
-
-export function usePasswordUpdate() {
-  const { showAlert } = useAlert();
-  return useMutation({
-    mutationFn: ({ data }: { data: iUpdatePassword }) => updatePassword(data),
-    onSuccess: () => {
-      showAlert({
-        title: "Sucesso!",
-        description: `Senha alterada com sucesso!`,
-        severity: "success",
-      });
-    },
-    onError: (error) => {
-      showAlert({
-        title: "Erro!",
-        description: error.message || "Erro ao alterar senha!",
         severity: "error",
       });
     },
